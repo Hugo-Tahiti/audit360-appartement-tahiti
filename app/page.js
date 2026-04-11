@@ -23,7 +23,7 @@ const STEPS = [
   },
   {
     id: "probleme",
-    question: "Est-ce que l'un de ces points vous concerne ?",
+    question: "Est-ce que l'un de ces points te concerne ?",
     emoji: "⚠️",
     sub: "C'est ce qui bloque 4 ventes sur 10 en Polynésie.",
     options: [
@@ -195,7 +195,7 @@ function ContactForm({ answers, onSubmit }) {
       {/* Teaser */}
       <div style={{ background: "#1A0505", border: `1px solid ${RED}33`, borderLeft: `4px solid ${RED}`, borderRadius: 12, padding: "16px 18px", marginBottom: 22 }}>
         <div style={{ fontSize: 12, color: RED, fontWeight: 800, letterSpacing: 1.5, marginBottom: 6 }}>
-          {isHot ? "🔥 PROFIL VENDEUR PRIORITAIRE" : "📊 VOTRE RÉSULTAT EST PRÊT"}
+          {isHot ? "🔥 PROFIL VENDEUR PRIORITAIRE" : "📊 TON RÉSULTAT EST PRÊT"}
         </div>
         <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 4 }}>
           {isHot ? "Ton estimation personnalisée est calculée." : "Je t'envoie ton analyse dans la seconde."}
@@ -237,7 +237,7 @@ function ContactForm({ answers, onSubmit }) {
 
 // ── Chargement ────────────────────────────────────────────────────────────────
 function Loading({ prenom }) {
-  const msgs = ["Analyse du dossier en cours…", "Vérification des risques copropriété…", "Calcul de la valeur du marché…", "Préparation de votre résultat…"];
+  const msgs = ["Analyse du dossier en cours…", "Vérification des risques copropriété…", "Calcul de la valeur du marché…", "Préparation de ton résultat…"];
   const [i, setI] = useState(0);
   useEffect(() => { const iv = setInterval(() => setI(n => (n + 1) % msgs.length), 1400); return () => clearInterval(iv); }, []);
 
@@ -246,7 +246,7 @@ function Loading({ prenom }) {
       <div style={{ width: 70, height: 70, borderRadius: "50%", overflow: "hidden", margin: "0 auto 20px", border: `3px solid ${RED}` }}>
         <img src="/hugo.png" alt="Hugo" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
       </div>
-      <div style={{ fontSize: 16, fontWeight: 700, color: "#fff", marginBottom: 6 }}>Hugo analyse votre dossier…</div>
+      <div style={{ fontSize: 16, fontWeight: 700, color: "#fff", marginBottom: 6 }}>Hugo analyse ton dossier…</div>
       <div style={{ fontSize: 13, color: "#777", marginBottom: 24, minHeight: 20, fontStyle: "italic" }}>{msgs[i]}</div>
       <div style={{ display: "flex", justifyContent: "center", gap: 8 }}>
         {[0,1,2].map(j => (
@@ -285,7 +285,7 @@ function ResultPage({ result, answers, contact }) {
         <div style={{ position: "absolute", inset: 0, opacity: 0.04, backgroundImage: `radial-gradient(circle,${RED} 1px,transparent 1px)`, backgroundSize: "18px 18px" }} />
         <div style={{ position: "relative" }}>
           <div style={{ fontSize: 11, letterSpacing: 3, color: "#666", marginBottom: 8 }}>
-            {contact.prenom.toUpperCase()}, VOTRE RÉSULTAT
+            {contact.prenom.toUpperCase()}, TON RÉSULTAT
           </div>
           <div style={{ fontSize: 68, fontWeight: 900, lineHeight: 1, background: `linear-gradient(135deg,${RED},#FF6B6B)`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginBottom: 4 }}>
             {count}%
@@ -329,7 +329,7 @@ function ResultPage({ result, answers, contact }) {
 
       {/* Ce que comprend l'audit */}
       <div style={{ background: DARK, borderRadius: 12, padding: "16px 18px", marginBottom: 18, border: `1px solid ${BORDER}` }}>
-        <div style={{ fontSize: 11, color: "#555", letterSpacing: 2, marginBottom: 12 }}>VOTRE AUDIT GRATUIT COMPREND</div>
+        <div style={{ fontSize: 11, color: "#555", letterSpacing: 2, marginBottom: 12 }}>TON AUDIT GRATUIT COMPREND</div>
         {[
           "Vérification PV d'AG des 3 dernières années",
           "Contrôle des charges & appels trimestriels",
