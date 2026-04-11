@@ -162,16 +162,18 @@ function ContactForm({ answers, onSubmit }) {
       <input type={type} value={form[k]} placeholder={ph}
         onChange={e => { setForm({ ...form, [k]: e.target.value }); setErrors({ ...errors, [k]: null }); }}
         onKeyDown={e => e.key === "Enter" && submit()}
+        inputMode={type === "tel" ? "tel" : type === "email" ? "email" : "text"}
+        autoComplete={type === "tel" ? "tel" : type === "email" ? "email" : k === "prenom" ? "given-name" : k === "nom" ? "family-name" : "off"}
+        autoCorrect="off"
+        autoCapitalize={type === "email" || type === "tel" ? "off" : "words"}
         style={{
           width: "100%", padding: "15px 14px", borderRadius: 12, fontSize: 16,
           background: errors[k] ? "#1A0A0A" : DARK,
           border: `2px solid ${errors[k] ? RED : BORDER}`,
           color: "#fff", outline: "none", boxSizing: "border-box",
           transition: "border-color 0.2s",
+          WebkitAppearance: "none",
         }}
-        autoComplete={type === "tel" ? "tel" : type === "email" ? "email" : k === "prenom" ? "given-name" : k === "nom" ? "family-name" : "off"}
-        autoCorrect="off"
-        autoCapitalize={type === "email" || type === "tel" ? "off" : "words"}
         onFocus={e => e.target.style.borderColor = RED}
         onBlur={e => e.target.style.borderColor = errors[k] ? RED : BORDER}
       />
