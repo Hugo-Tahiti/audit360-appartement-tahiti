@@ -341,7 +341,7 @@ function ResultPage({ result, answers, contact }) {
           "Validation règlement de copropriété",
           "Vérification titre de propriété & chaîne de propriété",
           "Estimation sur ventes réelles (pas les prix affichés)",
-          "Rapport remis sous 72h — 0 F CFP",
+          "Rapport remis sous 72h — Gratuit",
         ].map(item => (
           <div key={item} style={{ display: "flex", gap: 10, marginBottom: 8, fontSize: 14, color: "#ccc" }}>
             <span style={{ color: RED, fontWeight: 700 }}>✔</span><span>{item}</span>
@@ -356,7 +356,7 @@ function ResultPage({ result, answers, contact }) {
         boxShadow: "0 4px 24px rgba(37,211,102,0.4)",
       }}>
         <div style={{ fontSize: 18, fontWeight: 800 }}>💬 Réserver mon audit gratuit →</div>
-        <div style={{ fontSize: 12, opacity: 0.85, marginTop: 4 }}>Réponse sous 2h · 0 engagement · 0 F CFP</div>
+        <div style={{ fontSize: 12, opacity: 0.85, marginTop: 4 }}>Réponse sous 2h · 0 engagement · Gratuit</div>
       </a>
 
       {/* Garanties */}
