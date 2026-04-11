@@ -12,7 +12,7 @@ const COMMUNES = [
 const STEPS = [
   {
     id: "projet",
-    question: "Dans combien de temps voulez-vous vendre votre appartement ?",
+    question: "Dans combien de temps tu veux vendre ton appartement ?",
     emoji: "🎯",
     options: [
       { value: "maintenant", label: "Le plus vite possible", sub: "J'ai un projet concret", icon: "🔥", hot: true },
@@ -27,22 +27,22 @@ const STEPS = [
     emoji: "⚠️",
     sub: "C'est ce qui bloque 4 ventes sur 10 en Polynésie.",
     options: [
-      { value: "charges",  label: "Charges impayées",         sub: "Appels de charges en retard",      icon: "💸" },
-      { value: "ag",       label: "PV d'AG manquants",         sub: "Ou travaux votés non soldés",      icon: "📄" },
-      { value: "reglement",label: "Règlement de copropriété",  sub: "Introuvable ou pas à jour",        icon: "📋" },
-      { value: "aucun",    label: "Rien de tout ça",           sub: "Mon dossier est complet",          icon: "✅" },
+      { value: "charges",   label: "Charges impayées",          sub: "Appels de charges en retard",   icon: "💸" },
+      { value: "ag",        label: "PV d'AG manquants",          sub: "Ou travaux votés non soldés",   icon: "📄" },
+      { value: "reglement", label: "Règlement de copropriété",   sub: "Introuvable ou pas à jour",     icon: "📋" },
+      { value: "aucun",     label: "Rien de tout ça",            sub: "Mon dossier est complet",       icon: "✅" },
     ],
   },
   {
     id: "commune",
-    question: "Votre appartement est dans quelle commune ?",
+    question: "Ton appartement est dans quelle commune ?",
     emoji: "📍",
     sub: "Les prix varient jusqu'à +35% selon la commune.",
     type: "select",
   },
   {
     id: "surface",
-    question: "Quelle est la taille de votre appartement ?",
+    question: "Quelle est la taille de ton appartement ?",
     emoji: "📐",
     options: [
       { value: "moins50", label: "Studio ou T2",     sub: "Moins de 50 m²",    icon: "🔲" },
@@ -101,7 +101,7 @@ function QuizStep({ step, idx, total, onAnswer }) {
           background: DARK, border: `2px solid ${BORDER}`, color: "#fff",
           fontSize: 16, cursor: "pointer", outline: "none",
         }}>
-          <option value="">— Choisissez votre commune —</option>
+          <option value="">— Choisis ta commune —</option>
           {COMMUNES.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
       ) : (
@@ -119,7 +119,6 @@ function QuizStep({ step, idx, total, onAnswer }) {
               <div>
                 <div style={{ fontSize: 16, fontWeight: 700, color: "#fff", marginBottom: 2 }}>{opt.label}</div>
                 <div style={{ fontSize: 12, color: sel === opt.value ? "rgba(255,255,255,0.7)" : "#666" }}>{opt.sub}</div>
-                {opt.hot && <div style={{ fontSize: 10, color: RED, fontWeight: 800, letterSpacing: 1, marginTop: 3 }}>🔥 PRIORITAIRE</div>}
               </div>
             </button>
           ))}
@@ -199,9 +198,9 @@ function ContactForm({ answers, onSubmit }) {
           {isHot ? "🔥 PROFIL VENDEUR PRIORITAIRE" : "📊 VOTRE RÉSULTAT EST PRÊT"}
         </div>
         <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 4 }}>
-          {isHot ? "Votre estimation personnalisée est calculée." : "Je vous envoie votre analyse dans la seconde."}
+          {isHot ? "Ton estimation personnalisée est calculée." : "Je t'envoie ton analyse dans la seconde."}
         </div>
-        <div style={{ fontSize: 13, color: "#888" }}>Entrez vos coordonnées pour la recevoir 👇</div>
+        <div style={{ fontSize: 13, color: "#888" }}>Entre tes coordonnées pour la recevoir 👇</div>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 12px" }}>
@@ -291,7 +290,7 @@ function ResultPage({ result, answers, contact }) {
           <div style={{ fontSize: 68, fontWeight: 900, lineHeight: 1, background: `linear-gradient(135deg,${RED},#FF6B6B)`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginBottom: 4 }}>
             {count}%
           </div>
-          <div style={{ fontSize: 12, color: "#555", marginBottom: 12 }}>de chances de vendre au prix demandé avec un audit préalable</div>
+          <div style={{ fontSize: 12, color: "#555", marginBottom: 12 }}>de chances de vendre au prix demandé avec un dossier complet</div>
           <div style={{ background: `${RED}15`, border: `1px solid ${RED}33`, borderRadius: 10, padding: "12px 16px" }}>
             <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", lineHeight: 1.4 }}>{result.titre}</div>
           </div>
@@ -417,9 +416,9 @@ export default function Page() {
       {/* Header */}
       <div style={{ background: "#0D0D0D", borderBottom: "1px solid #1A1A1A", padding: "14px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 10 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ fontSize: 20, fontWeight: 900, color: RED, letterSpacing: -0.5 }}>kw</div>
+          <div style={{ fontSize: 20, fontWeight: 900, color: RED, letterSpacing: -0.5, lineHeight: 1 }}>kw</div>
           <div style={{ width: 1, height: 20, background: "#222" }} />
-          <div style={{ fontSize: 11, color: "#888", letterSpacing: 1 }}>ESTIMATION APPARTEMENT</div>
+          <div style={{ fontSize: 11, color: "#888", letterSpacing: 1, lineHeight: 1 }}>ESTIMATION APPARTEMENT</div>
         </div>
         {(isQuiz || isContact) && (
           <div style={{ fontSize: 11, color: RED, fontWeight: 700 }}>
