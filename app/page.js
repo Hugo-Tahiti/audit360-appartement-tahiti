@@ -205,27 +205,29 @@ function ContactForm({ answers, onSubmit }) {
         <div style={{ fontSize: 13, color: "#888" }}>Entre tes coordonnées pour la recevoir 👇</div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 12px" }}>
-        <Field k="prenom" label="PRÉNOM" ph="Marie" />
-        <Field k="nom" label="NOM" ph="Dupont" />
-      </div>
-      <Field k="tel" label="TÉLÉPHONE / WHATSAPP" ph="+689 87 XX XX XX" type="tel" />
-      <Field k="email" label="EMAIL" ph="marie@example.com" type="email" />
+      <form onSubmit={e => { e.preventDefault(); submit(); }} autoComplete="on" noValidate>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 12px" }}>
+          <Field k="prenom" label="PRÉNOM" ph="Marie" />
+          <Field k="nom" label="NOM" ph="Dupont" />
+        </div>
+        <Field k="tel" label="TÉLÉPHONE / WHATSAPP" ph="+689 87 XX XX XX" type="tel" />
+        <Field k="email" label="EMAIL" ph="marie@example.com" type="email" />
 
-      <button onClick={submit} disabled={loading} style={{
-        width: "100%", background: loading ? "#333" : RED,
-        color: "#fff", border: "none", borderRadius: 14,
-        padding: "20px 24px", fontSize: 17, fontWeight: 800,
-        cursor: loading ? "not-allowed" : "pointer",
-        marginTop: 6, marginBottom: 14,
-        boxShadow: loading ? "none" : `0 4px 24px ${RED}55`,
-        display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
-        transition: "all 0.2s",
-      }}>
-        {loading
-          ? <><span style={{ display: "inline-block", animation: "spin 0.7s linear infinite" }}>⟳</span> Calcul en cours…</>
-          : "Voir mon estimation →"}
-      </button>
+        <button type="submit" disabled={loading} style={{
+          width: "100%", background: loading ? "#333" : RED,
+          color: "#fff", border: "none", borderRadius: 14,
+          padding: "20px 24px", fontSize: 17, fontWeight: 800,
+          cursor: loading ? "not-allowed" : "pointer",
+          marginTop: 6, marginBottom: 14,
+          boxShadow: loading ? "none" : `0 4px 24px ${RED}55`,
+          display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
+          transition: "all 0.2s",
+        }}>
+          {loading
+            ? <><span style={{ display: "inline-block", animation: "spin 0.7s linear infinite" }}>⟳</span> Calcul en cours…</>
+            : "Voir mon estimation →"}
+        </button>
+      </form>
 
       <div style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap" }}>
         {["🔒 Données confidentielles", "⚡ Résultat immédiat", "💯 100% gratuit"].map(t => (
