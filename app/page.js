@@ -170,6 +170,9 @@ function ContactForm({ answers, onSubmit }) {
           color: "#fff", outline: "none", boxSizing: "border-box",
           transition: "border-color 0.2s",
         }}
+        autoComplete={type === "tel" ? "tel" : type === "email" ? "email" : k === "prenom" ? "given-name" : k === "nom" ? "family-name" : "off"}
+        autoCorrect="off"
+        autoCapitalize={type === "email" || type === "tel" ? "off" : "words"}
         onFocus={e => e.target.style.borderColor = RED}
         onBlur={e => e.target.style.borderColor = errors[k] ? RED : BORDER}
       />
