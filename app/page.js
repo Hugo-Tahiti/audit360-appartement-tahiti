@@ -5,7 +5,7 @@ const WA_NUMBER = "68987799385"; // ← TON NUMÉRO ICI
 
 const COMMUNES = [
   "Papeete","Faa'a","Punaauia","Pirae","Arue","Mahina",
-  "Paea","Papara","Taravao","Moorea","Bora Bora","Autre",
+  "Paea","Papara","Taravao","Tiarei","Hitiaa O Te Ra","Papeari","Autre commune",
 ];
 
 // ── Questions du quiz ─────────────────────────────────────────────────────────
