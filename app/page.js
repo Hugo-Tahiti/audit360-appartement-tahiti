@@ -205,7 +205,7 @@ function ContactForm({ answers, onSubmit }) {
         </div>
         <div style={{ marginBottom: 14 }}>
           <label style={{ display: "block", fontSize: 12, color: "#888", marginBottom: 5, fontWeight: 700 }}>TÉLÉPHONE / WHATSAPP <span style={{ color: RED }}>*</span></label>
-          <input ref={refs.tel} type="tel" placeholder="+689 87 XX XX XX" autoComplete="tel" inputMode="tel" style={inputStyle("tel")} onFocus={e => e.target.style.borderColor = RED} onBlur={e => e.target.style.borderColor = errors.tel ? RED : BORDER} />
+          <input ref={refs.tel} type="tel" placeholder="87 XX XX XX" autoComplete="tel" inputMode="tel" style={inputStyle("tel")} onFocus={e => e.target.style.borderColor = RED} onBlur={e => e.target.style.borderColor = errors.tel ? RED : BORDER} />
           {errors.tel && <div style={{ fontSize: 11, color: RED, marginTop: 3 }}>⚠ {errors.tel}</div>}
         </div>
         <div style={{ marginBottom: 14 }}>
