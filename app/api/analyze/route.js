@@ -84,6 +84,27 @@ JSON uniquement.`;
   const raw = data.content?.find(b => b.type === "text")?.text || "{}";
   const clean = raw.replace(/```json|```/g, "").trim();
 
+  // Envoi vers Google Sheets
+  try {
+    await fetch(process.env.GOOGLE_SHEET_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        prenom:   contact.prenom,
+        nom:      contact.nom,
+        tel:      contact.tel,
+        email:    contact.email,
+        commune:  answers.commune,
+        surface:  answers.surface,
+        projet:   answers.projet,
+        probleme: answers.probleme,
+        score:    JSON.parse(clean).score || "",
+      }),
+    });
+  } catch(e) {
+    console.error("Google Sheets error:", e);
+  }
+
   // Log lead to console (visible in Vercel logs)
   console.log("NOUVEAU LEAD", {
     date: new Date().toISOString(),
