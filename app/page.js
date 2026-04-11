@@ -128,6 +128,37 @@ function QuizStep({ step, idx, total, onAnswer }) {
   );
 }
 
+// ── Champ de formulaire (hors composant pour éviter le re-render) ─────────────
+function Field({ k, label, ph, type = "text", value, error, onChange }) {
+  return (
+    <div style={{ marginBottom: 14 }}>
+      <label style={{ display: "block", fontSize: 12, color: "#888", marginBottom: 5, fontWeight: 700, letterSpacing: 0.5 }}>
+        {label} <span style={{ color: RED }}>*</span>
+      </label>
+      <input
+        type={type}
+        value={value}
+        placeholder={ph}
+        onChange={e => onChange(k, e.target.value)}
+        inputMode={type === "tel" ? "tel" : type === "email" ? "email" : "text"}
+        autoComplete={type === "tel" ? "tel" : type === "email" ? "email" : k === "prenom" ? "given-name" : k === "nom" ? "family-name" : "off"}
+        autoCorrect="off"
+        autoCapitalize={type === "email" || type === "tel" ? "off" : "words"}
+        style={{
+          width: "100%", padding: "15px 14px", borderRadius: 12, fontSize: 16,
+          background: error ? "#1A0A0A" : DARK,
+          border: `2px solid ${error ? RED : BORDER}`,
+          color: "#fff", outline: "none", boxSizing: "border-box",
+          transition: "border-color 0.2s", WebkitAppearance: "none",
+        }}
+        onFocus={e => e.target.style.borderColor = RED}
+        onBlur={e => e.target.style.borderColor = error ? RED : BORDER}
+      />
+      {error && <div style={{ fontSize: 11, color: RED, marginTop: 3 }}>⚠ {error}</div>}
+    </div>
+  );
+}
+
 // ── Formulaire contact ────────────────────────────────────────────────────────
 function ContactForm({ answers, onSubmit }) {
   const [form, setForm] = useState({ prenom: "", nom: "", tel: "", email: "" });
@@ -137,6 +168,11 @@ function ContactForm({ answers, onSubmit }) {
   useEffect(() => { setTimeout(() => setShow(true), 40); }, []);
 
   const isHot = answers.projet === "maintenant";
+
+  const handleChange = (k, val) => {
+    setForm(prev => ({ ...prev, [k]: val }));
+    setErrors(prev => ({ ...prev, [k]: null }));
+  };
 
   const validate = () => {
     const e = {};
@@ -153,33 +189,6 @@ function ContactForm({ answers, onSubmit }) {
     setLoading(true);
     onSubmit(form);
   };
-
-  const Field = ({ k, label, ph, type = "text" }) => (
-    <div style={{ marginBottom: 14 }}>
-      <label style={{ display: "block", fontSize: 12, color: "#888", marginBottom: 5, fontWeight: 700, letterSpacing: 0.5 }}>
-        {label} <span style={{ color: RED }}>*</span>
-      </label>
-      <input type={type} value={form[k]} placeholder={ph}
-        onChange={e => { setForm({ ...form, [k]: e.target.value }); setErrors({ ...errors, [k]: null }); }}
-        onKeyDown={e => e.key === "Enter" && submit()}
-        inputMode={type === "tel" ? "tel" : type === "email" ? "email" : "text"}
-        autoComplete={type === "tel" ? "tel" : type === "email" ? "email" : k === "prenom" ? "given-name" : k === "nom" ? "family-name" : "off"}
-        autoCorrect="off"
-        autoCapitalize={type === "email" || type === "tel" ? "off" : "words"}
-        style={{
-          width: "100%", padding: "15px 14px", borderRadius: 12, fontSize: 16,
-          background: errors[k] ? "#1A0A0A" : DARK,
-          border: `2px solid ${errors[k] ? RED : BORDER}`,
-          color: "#fff", outline: "none", boxSizing: "border-box",
-          transition: "border-color 0.2s",
-          WebkitAppearance: "none",
-        }}
-        onFocus={e => e.target.style.borderColor = RED}
-        onBlur={e => e.target.style.borderColor = errors[k] ? RED : BORDER}
-      />
-      {errors[k] && <div style={{ fontSize: 11, color: RED, marginTop: 3 }}>⚠ {errors[k]}</div>}
-    </div>
-  );
 
   return (
     <div style={{ opacity: show ? 1 : 0, transform: show ? "translateY(0)" : "translateY(12px)", transition: "all 0.3s" }}>
@@ -207,11 +216,11 @@ function ContactForm({ answers, onSubmit }) {
 
       <form onSubmit={e => { e.preventDefault(); submit(); }} autoComplete="on" noValidate>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 12px" }}>
-          <Field k="prenom" label="PRÉNOM" ph="Marie" />
-          <Field k="nom" label="NOM" ph="Dupont" />
+          <Field k="prenom" label="PRÉNOM" ph="Marie" value={form.prenom} error={errors.prenom} onChange={handleChange} />
+          <Field k="nom" label="NOM" ph="Dupont" value={form.nom} error={errors.nom} onChange={handleChange} />
         </div>
-        <Field k="tel" label="TÉLÉPHONE / WHATSAPP" ph="+689 87 XX XX XX" type="tel" />
-        <Field k="email" label="EMAIL" ph="marie@example.com" type="email" />
+        <Field k="tel" label="TÉLÉPHONE / WHATSAPP" ph="+689 87 XX XX XX" type="tel" value={form.tel} error={errors.tel} onChange={handleChange} />
+        <Field k="email" label="EMAIL" ph="marie@example.com" type="email" value={form.email} error={errors.email} onChange={handleChange} />
 
         <button type="submit" disabled={loading} style={{
           width: "100%", background: loading ? "#333" : RED,
