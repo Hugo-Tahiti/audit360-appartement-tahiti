@@ -387,9 +387,26 @@ export default function Page() {
 
   useEffect(() => { top.current?.scrollTo({ top: 0, behavior: "smooth" }); }, [phase, stepIdx]);
 
+  useEffect(() => {
+    fetch("/api/track", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ event: "quiz_start", data: {} }),
+    }).catch(() => {});
+  }, []);
+
+  const track = (event, data = {}) => {
+    fetch("/api/track", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ event, data }),
+    }).catch(() => {});
+  };
+
   const onAnswer = (id, val) => {
     const a = { ...answers, [id]: val };
     setAnswers(a);
+    track("step_complete", { step: id, value: val });
     if (stepIdx < STEPS.length - 1) setStepIdx(stepIdx + 1);
     else setPhase("contact");
   };
@@ -397,6 +414,7 @@ export default function Page() {
   const onContact = async (data) => {
     setContact(data);
     setPhase("loading");
+    track("contact_submit");
     try {
       const res = await fetch("/api/analyze", {
         method: "POST",

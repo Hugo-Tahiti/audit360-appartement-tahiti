@@ -1,4 +1,4 @@
-# audit360-tahiti 
+# audit360-tahiti
 
 Funnel de qualification appartement · Keller Williams Polynésie · Hugo Vidus
 
@@ -24,7 +24,7 @@ Funnel de qualification appartement · Keller Williams Polynésie · Hugo Vidus
 ### 4. Ton numéro WhatsApp
 Dans `app/page.js` ligne 5 :
 ```js
-const WA_NUMBER = "+68987799385"; // remplace par ton numéro sans + ni espaces
+const WA_NUMBER = "68987799385"; // remplace par ton numéro sans + ni espaces
 ```
 
 ### 5. Nom de domaine (optionnel mais recommandé)
