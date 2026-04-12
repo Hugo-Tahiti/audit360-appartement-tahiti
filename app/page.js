@@ -387,7 +387,10 @@ export default function Page() {
 
   useEffect(() => { top.current?.scrollTo({ top: 0, behavior: "smooth" }); }, [phase, stepIdx]);
 
+  const tracked = useRef(false);
   useEffect(() => {
+    if (tracked.current) return;
+    tracked.current = true;
     fetch("/api/track", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
