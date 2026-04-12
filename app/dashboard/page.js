@@ -236,7 +236,7 @@ export default function Dashboard() {
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{ fontSize: 18, fontWeight: 900, color: RED }}>kw</div>
           <div style={{ width: 1, height: 18, background: BORDER }} />
-          <div style={{ fontSize: 11, color: GREY, letterSpacing: 1 }}>DEAL FLOW DASHBOARD</div>
+          <div style={{ fontSize: 11, color: GREY, letterSpacing: 1 }}>DASHBOARD LEADS</div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           {lastUpdate && <div style={{ fontSize: 11, color: GREY }}>Mis à jour {lastUpdate}</div>}
