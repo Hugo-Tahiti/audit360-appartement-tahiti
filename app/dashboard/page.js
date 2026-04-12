@@ -135,7 +135,7 @@ export default function Dashboard() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/dashboard-data");
+      const res = await fetch(`/api/dashboard-data?t=${Date.now()}`);
       const json = await res.json();
       setLeads(json.leads || []);
       setTracking(json.tracking || []);
