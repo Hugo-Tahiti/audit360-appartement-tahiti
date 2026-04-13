@@ -11,13 +11,23 @@ const COMMUNES = [
 // ── Questions du quiz ─────────────────────────────────────────────────────────
 const STEPS = [
   {
+    id: "proprietaire",
+    question: "Tu es propriétaire d'un appartement à Tahiti ?",
+    emoji: "🏠",
+    options: [
+      { value: "oui",      label: "Oui, je suis propriétaire", sub: "Et je pense à vendre", icon: "✅", hot: true },
+      { value: "achat",    label: "Non, je cherche à acheter",  sub: "Je suis acquéreur",    icon: "🔍" },
+      { value: "curieux",  label: "Je me renseigne juste",      sub: "Pas de projet précis", icon: "💭" },
+    ],
+  },
+  {
     id: "projet",
-    question: "Dans combien de temps tu veux vendre ton appartement ?",
+    question: "Dans combien de temps tu veux vendre ?",
     emoji: "🎯",
     options: [
       { value: "maintenant", label: "Le plus vite possible", sub: "J'ai un projet concret", icon: "🔥", hot: true },
       { value: "sixmois",    label: "Dans les 6 mois",       sub: "Je me prépare",         icon: "📅" },
-      { value: "estimer",    label: "Je veux d'abord savoir ce que ça vaut", sub: "Estimation gratuite", icon: "🔍" },
+      { value: "estimer",    label: "Je veux d'abord estimer", sub: "Combien ça vaut ?",   icon: "🔍" },
       { value: "reflechit",  label: "Je réfléchis encore",   sub: "Pas de pression",       icon: "💭" },
     ],
   },
@@ -410,6 +420,11 @@ export default function Page() {
     const a = { ...answers, [id]: val };
     setAnswers(a);
     track("step_complete", { step: id, value: val });
+    // Sortie si pas propriétaire
+    if (id === "proprietaire" && val !== "oui") {
+      setPhase("not_owner");
+      return;
+    }
     if (stepIdx < STEPS.length - 1) setStepIdx(stepIdx + 1);
     else setPhase("contact");
   };
@@ -471,7 +486,22 @@ export default function Page() {
         {phase === "contact" && (
           <ContactForm answers={answers} onSubmit={onContact} />
         )}
-        {phase === "loading" && <Loading prenom={contact?.prenom} />}
+        {phase === "not_owner" && (
+          <div style={{ textAlign: "center", padding: "40px 20px" }}>
+            <div style={{ fontSize: 48, marginBottom: 16 }}>👍</div>
+            <div style={{ fontSize: 18, fontWeight: 800, color: "#fff", marginBottom: 10 }}>Merci pour ta réponse !</div>
+            <div style={{ fontSize: 14, color: "#888", marginBottom: 24, lineHeight: 1.6 }}>
+              Ce quiz est conçu pour les propriétaires qui souhaitent vendre.<br/>
+              Si tu cherches à acheter un appartement à Tahiti, je peux aussi t'aider.
+            </div>
+            <a href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Bonjour Hugo, je cherche à acheter un appartement à Tahiti.")}`}
+              target="_blank" rel="noreferrer"
+              style={{ display: "inline-block", background: "#25D366", color: "#fff", textDecoration: "none", borderRadius: 12, padding: "14px 24px", fontSize: 15, fontWeight: 700 }}>
+              💬 Me contacter sur WhatsApp
+            </a>
+          </div>
+        )}
+        {phase === "loading" && <Loading prenom={contact?.prenom} />
         {phase === "result" && result && (
           <ResultPage result={result} answers={answers} contact={contact} />
         )}
