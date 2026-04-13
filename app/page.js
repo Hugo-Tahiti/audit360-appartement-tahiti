@@ -501,7 +501,7 @@ export default function Page() {
             </a>
           </div>
         )}
-        {phase === "loading" && <Loading prenom={contact?.prenom} />
+        {phase === "loading" && <Loading prenom={contact?.prenom} />}
         {phase === "result" && result && (
           <ResultPage result={result} answers={answers} contact={contact} />
         )}
