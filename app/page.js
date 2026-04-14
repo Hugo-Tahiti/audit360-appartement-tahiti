@@ -595,19 +595,19 @@ export default function Page() {
             ) : (
               <div style={{ textAlign: "center", padding: "10px 0" }}>
                 <div style={{ fontSize: 40, marginBottom: 14 }}>📊</div>
-                <div style={{ fontSize: 18, fontWeight: 800, color: "#fff", marginBottom: 10 }}>Tu veux connaître la valeur du marché ?</div>
+                <div style={{ fontSize: 18, fontWeight: 800, color: "#fff", marginBottom: 10 }}>Tu veux connaître la valeur de ton appartement ?</div>
                 <div style={{ fontSize: 14, color: "#888", marginBottom: 20, lineHeight: 1.7 }}>
-                  Même sans projet immédiat, connaître la valeur de ton patrimoine c'est utile.<br/>
-                  Je t'envoie une estimation gratuite en quelques heures.
+                  Une vraie estimation nécessite une visite — c'est ce qui la rend fiable.<br/>
+                  Je me déplace gratuitement et sans engagement pour évaluer ton bien.
                 </div>
                 <div style={{ background: DARK, borderRadius: 12, padding: "14px 16px", marginBottom: 20, border: `1px solid ${BORDER}`, textAlign: "left" }}>
-                  {["Estimation gratuite sans engagement", "Basée sur les ventes réelles du marché", "Utile pour préparer l'avenir"].map(item => (
+                  {["Visite gratuite et sans engagement", "Estimation basée sur les ventes réelles", "Rapport complet remis sous 72h"].map(item => (
                     <div key={item} style={{ display: "flex", gap: 10, marginBottom: 8, fontSize: 13, color: "#ccc" }}>
                       <span style={{ color: RED }}>✔</span><span>{item}</span>
                     </div>
                   ))}
                 </div>
-                <a href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Bonjour Hugo, je voudrais avoir une idée de la valeur de mon appartement à Tahiti, même si je n'ai pas de projet de vente pour l'instant.")}`}
+                <a href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Bonjour Hugo, je voudrais une estimation gratuite de mon appartement à Tahiti. Je n'ai pas de projet de vente immédiat mais je souhaite connaître sa valeur.")}`}
                   target="_blank" rel="noreferrer"
                   style={{ display: "block", background: "#25D366", color: "#fff", textDecoration: "none", borderRadius: 12, padding: "18px 20px", fontSize: 15, fontWeight: 700, textAlign: "center" }}>
                   💬 Recevoir une estimation gratuite →
