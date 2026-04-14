@@ -138,29 +138,71 @@ function QuizStep({ step, idx, total, onAnswer }) {
   );
 }
 
+// ── Fourchettes de prix par commune (source KW Polynésie fév. 2025) ──────────
+const PRIX_M2 = {
+  "Papeete":         { min: 500000, max: 650000 },
+  "Faa'a":           { min: 520000, max: 680000 },
+  "Pirae":           { min: 510000, max: 660000 },
+  "Punaauia":        { min: 580000, max: 800000 },
+  "Arue":            { min: 460000, max: 620000 },
+  "Mahina":          { min: 420000, max: 580000 },
+  "Paea":            { min: 400000, max: 560000 },
+  "Papara":          { min: 380000, max: 520000 },
+  "Taravao":         { min: 360000, max: 500000 },
+  "Tiarei":          { min: 320000, max: 480000 },
+  "Hitiaa O Te Ra":  { min: 320000, max: 480000 },
+  "Papeari":         { min: 320000, max: 480000 },
+  "Autre commune":   { min: 350000, max: 500000 },
+};
+
+const SURFACE_M2 = {
+  moins50: { label: "Studio / T2", m2: 40 },
+  "50_80": { label: "T2 / T3",     m2: 65 },
+  "80_120":{ label: "T3 / T4",     m2: 100 },
+  plus120: { label: "Prestige",    m2: 140 },
+};
+
+function formatXPF(n) {
+  return n.toLocaleString("fr-FR") + " F CFP";
+}
+
+function getPrixFourchette(commune, surface) {
+  const prix = PRIX_M2[commune] || PRIX_M2["Autre commune"];
+  const surf = SURFACE_M2[surface] || SURFACE_M2["50_80"];
+  return {
+    min: formatXPF(prix.min * surf.m2),
+    max: formatXPF(prix.max * surf.m2),
+    label: surf.label,
+  };
+}
+
 // ── Formulaire contact ────────────────────────────────────────────────────────
 function ContactForm({ answers, onSubmit }) {
   const refs = {
-    prenom: useRef(), nom: useRef(),
-    tel: useRef(), email: useRef(),
+    prenom: useRef(),
+    tel:    useRef(),
+    email:  useRef(),
   };
+  const [rappel, setRappel] = useState(null);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
   useEffect(() => { setTimeout(() => setShow(true), 40); }, []);
 
+  const fourchette = getPrixFourchette(answers.commune, answers.surface);
   const isHot = answers.projet === "maintenant";
 
   const submit = () => {
+    if (!rappel) { setErrors({ rappel: "Choisis une option" }); return; }
     const v = {
       prenom: refs.prenom.current?.value.trim(),
-      nom:    refs.nom.current?.value.trim(),
       tel:    refs.tel.current?.value.trim(),
       email:  refs.email.current?.value.trim(),
+      nom:    "",
+      rappel,
     };
     const e = {};
     if (!v.prenom) e.prenom = "Requis";
-    if (!v.nom)    e.nom    = "Requis";
     if ((v.tel || "").replace(/\D/g, "").length < 6) e.tel = "Numéro invalide";
     if (!(v.email || "").includes("@")) e.email = "Email invalide";
     if (Object.keys(e).length) { setErrors(e); return; }
@@ -176,42 +218,77 @@ function ContactForm({ answers, onSubmit }) {
     transition: "border-color 0.2s", WebkitAppearance: "none",
   });
 
+  const rappelOptions = [
+    { value: "aujourd_hui", label: "Aujourd'hui",    sub: "Je suis disponible",    icon: "🕐" },
+    { value: "semaine",     label: "Cette semaine",  sub: "Dans les prochains jours", icon: "📅" },
+    { value: "whatsapp",    label: "Par WhatsApp",   sub: "Je préfère écrire",     icon: "💬" },
+  ];
+
   return (
     <div style={{ opacity: show ? 1 : 0, transform: show ? "translateY(0)" : "translateY(12px)", transition: "all 0.3s" }}>
-      {/* Barre progression finale */}
+
+      {/* Barre progression */}
       <div style={{ marginBottom: 20 }}>
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "#666", marginBottom: 5 }}>
           <span style={{ color: "#fff", fontWeight: 600 }}>Dernière étape</span>
-          <span style={{ color: RED, fontWeight: 700 }}>95%</span>
+          <span style={{ color: RED, fontWeight: 700 }}>90%</span>
         </div>
         <div style={{ height: 5, background: "#1A1A1A", borderRadius: 99 }}>
-          <div style={{ height: "100%", borderRadius: 99, background: `linear-gradient(90deg,${RED},#FF5555)`, width: "95%", transition: "width 0.4s" }} />
+          <div style={{ height: "100%", borderRadius: 99, background: `linear-gradient(90deg,${RED},#FF5555)`, width: "90%", transition: "width 0.4s" }} />
         </div>
       </div>
 
-      {/* Teaser */}
-      <div style={{ background: "#1A0505", border: `1px solid ${RED}33`, borderLeft: `4px solid ${RED}`, borderRadius: 12, padding: "16px 18px", marginBottom: 22 }}>
-        <div style={{ fontSize: 12, color: RED, fontWeight: 800, letterSpacing: 1.5, marginBottom: 6 }}>
-          {isHot ? "🔥 PROFIL VENDEUR PRIORITAIRE" : "📊 TON RÉSULTAT EST PRÊT"}
+      {/* FOURCHETTE DE PRIX — hook principal */}
+      <div style={{ background: "linear-gradient(135deg,#1A1A1A,#0D0D0D)", border: `1px solid ${RED}44`, borderRadius: 14, padding: "20px", marginBottom: 18, textAlign: "center", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, opacity: 0.03, backgroundImage: `radial-gradient(circle,${RED} 1px,transparent 1px)`, backgroundSize: "16px 16px" }} />
+        <div style={{ position: "relative" }}>
+          <div style={{ fontSize: 11, color: RED, fontWeight: 800, letterSpacing: 2, marginBottom: 8 }}>
+            {isHot ? "🔥 PROFIL VENDEUR PRIORITAIRE" : "📊 ESTIMATION PRÉLIMINAIRE"}
+          </div>
+          <div style={{ fontSize: 13, color: "#888", marginBottom: 6 }}>
+            Ton {fourchette.label} à <strong style={{ color: "#fff" }}>{answers.commune}</strong> pourrait valoir entre
+          </div>
+          <div style={{ fontSize: 22, fontWeight: 900, color: RED, marginBottom: 2 }}>{fourchette.min}</div>
+          <div style={{ fontSize: 13, color: "#666", marginBottom: 4 }}>et</div>
+          <div style={{ fontSize: 22, fontWeight: 900, color: "#fff", marginBottom: 10 }}>{fourchette.max}</div>
+          <div style={{ background: `${RED}20`, borderRadius: 8, padding: "8px 12px", fontSize: 12, color: "#aaa" }}>
+            👇 Entre tes coordonnées pour recevoir l'estimation précise et l'analyse de ton dossier
+          </div>
         </div>
-        <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 4 }}>
-          {isHot ? "Ton estimation personnalisée est calculée." : "Je t'envoie ton analyse dans la seconde."}
-        </div>
-        <div style={{ fontSize: 13, color: "#888" }}>Entre tes coordonnées pour la recevoir 👇</div>
       </div>
 
+      {/* Question rappel */}
+      <div style={{ marginBottom: 18 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 12 }}>
+          Quand veux-tu qu'Hugo te contacte ?
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {rappelOptions.map(opt => (
+            <button key={opt.value} onClick={() => { setRappel(opt.value); setErrors({ ...errors, rappel: null }); }}
+              style={{
+                background: rappel === opt.value ? RED : DARK,
+                border: `2px solid ${rappel === opt.value ? RED : BORDER}`,
+                borderRadius: 12, padding: "14px 16px",
+                display: "flex", alignItems: "center", gap: 12,
+                cursor: "pointer", textAlign: "left", transition: "all 0.2s",
+              }}>
+              <span style={{ fontSize: 22 }}>{opt.icon}</span>
+              <div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "#fff" }}>{opt.label}</div>
+                <div style={{ fontSize: 12, color: rappel === opt.value ? "rgba(255,255,255,0.7)" : "#666" }}>{opt.sub}</div>
+              </div>
+            </button>
+          ))}
+        </div>
+        {errors.rappel && <div style={{ fontSize: 11, color: RED, marginTop: 6 }}>⚠ {errors.rappel}</div>}
+      </div>
+
+      {/* Formulaire — 3 champs */}
       <form onSubmit={e => { e.preventDefault(); submit(); }} autoComplete="on" noValidate>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 12px" }}>
-          <div style={{ marginBottom: 14 }}>
-            <label style={{ display: "block", fontSize: 12, color: "#888", marginBottom: 5, fontWeight: 700 }}>PRÉNOM <span style={{ color: RED }}>*</span></label>
-            <input ref={refs.prenom} type="text" placeholder="Marie" autoComplete="given-name" autoCapitalize="words" style={inputStyle("prenom")} onFocus={e => e.target.style.borderColor = RED} onBlur={e => e.target.style.borderColor = errors.prenom ? RED : BORDER} />
-            {errors.prenom && <div style={{ fontSize: 11, color: RED, marginTop: 3 }}>⚠ {errors.prenom}</div>}
-          </div>
-          <div style={{ marginBottom: 14 }}>
-            <label style={{ display: "block", fontSize: 12, color: "#888", marginBottom: 5, fontWeight: 700 }}>NOM <span style={{ color: RED }}>*</span></label>
-            <input ref={refs.nom} type="text" placeholder="Dupont" autoComplete="family-name" autoCapitalize="words" style={inputStyle("nom")} onFocus={e => e.target.style.borderColor = RED} onBlur={e => e.target.style.borderColor = errors.nom ? RED : BORDER} />
-            {errors.nom && <div style={{ fontSize: 11, color: RED, marginTop: 3 }}>⚠ {errors.nom}</div>}
-          </div>
+        <div style={{ marginBottom: 14 }}>
+          <label style={{ display: "block", fontSize: 12, color: "#888", marginBottom: 5, fontWeight: 700 }}>PRÉNOM <span style={{ color: RED }}>*</span></label>
+          <input ref={refs.prenom} type="text" placeholder="Marie" autoComplete="given-name" autoCapitalize="words" style={inputStyle("prenom")} onFocus={e => e.target.style.borderColor = RED} onBlur={e => e.target.style.borderColor = errors.prenom ? RED : BORDER} />
+          {errors.prenom && <div style={{ fontSize: 11, color: RED, marginTop: 3 }}>⚠ {errors.prenom}</div>}
         </div>
         <div style={{ marginBottom: 14 }}>
           <label style={{ display: "block", fontSize: 12, color: "#888", marginBottom: 5, fontWeight: 700 }}>TÉLÉPHONE / WHATSAPP <span style={{ color: RED }}>*</span></label>
@@ -236,12 +313,12 @@ function ContactForm({ answers, onSubmit }) {
         }}>
           {loading
             ? <><span style={{ display: "inline-block", animation: "spin 0.7s linear infinite" }}>⟳</span> Calcul en cours…</>
-            : "Voir mon estimation →"}
+            : "Découvrir l'estimation complète →"}
         </button>
       </form>
 
       <div style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap" }}>
-        {["🔒 Données confidentielles", "⚡ Résultat immédiat", "💯 100% gratuit"].map(t => (
+        {["🔒 Confidentiel", "⚡ Résultat immédiat", "💯 Gratuit"].map(t => (
           <div key={t} style={{ fontSize: 11, color: "#555", background: "#111", borderRadius: 20, padding: "4px 10px", border: "1px solid #1E1E1E" }}>{t}</div>
         ))}
       </div>
