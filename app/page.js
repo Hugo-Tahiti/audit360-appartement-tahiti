@@ -443,12 +443,12 @@ function ResultPage({ result, answers, contact }) {
         boxShadow: "0 4px 24px rgba(37,211,102,0.4)",
       }}>
         <div style={{ fontSize: 18, fontWeight: 800 }}>💬 Réserver mon audit gratuit →</div>
-        <div style={{ fontSize: 12, opacity: 0.85, marginTop: 4 }}>Réponse sous 2h · 0 engagement · Gratuit</div>
+        <div style={{ fontSize: 12, opacity: 0.85, marginTop: 4 }}>Sans engagement · Gratuit · Hugo te contacte</div>
       </a>
 
       {/* Garanties */}
       <div style={{ display: "flex", justifyContent: "center", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
-        {["🔒 Confidentiel", "⏱ Réponse en 2h", "💯 Gratuit"].map(t => (
+        {["🔒 Confidentiel", "⏱ Réponse rapide", "💯 Gratuit"].map(t => (
           <div key={t} style={{ fontSize: 11, color: "#555", background: "#111", borderRadius: 20, padding: "4px 12px", border: "1px solid #1E1E1E" }}>{t}</div>
         ))}
       </div>
