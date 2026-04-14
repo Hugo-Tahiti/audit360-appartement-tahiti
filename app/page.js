@@ -564,18 +564,56 @@ export default function Page() {
           <ContactForm answers={answers} onSubmit={onContact} />
         )}
         {phase === "not_owner" && (
-          <div style={{ textAlign: "center", padding: "40px 20px" }}>
-            <div style={{ fontSize: 48, marginBottom: 16 }}>👍</div>
-            <div style={{ fontSize: 18, fontWeight: 800, color: "#fff", marginBottom: 10 }}>Merci pour ta réponse !</div>
-            <div style={{ fontSize: 14, color: "#888", marginBottom: 24, lineHeight: 1.6 }}>
-              Ce quiz est conçu pour les propriétaires qui souhaitent vendre.<br/>
-              Si tu cherches à acheter un appartement à Tahiti, je peux aussi t'aider.
+          <div style={{ transition: "all 0.3s" }}>
+            <div style={{ marginBottom: 24 }}>
+              <div style={{ height: 5, background: "#1A1A1A", borderRadius: 99 }}>
+                <div style={{ height: "100%", borderRadius: 99, background: `linear-gradient(90deg,${RED},#FF5555)`, width: "100%" }} />
+              </div>
             </div>
-            <a href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Bonjour Hugo, je cherche à acheter un appartement à Tahiti.")}`}
-              target="_blank" rel="noreferrer"
-              style={{ display: "inline-block", background: "#25D366", color: "#fff", textDecoration: "none", borderRadius: 12, padding: "14px 24px", fontSize: 15, fontWeight: 700 }}>
-              💬 Me contacter sur WhatsApp
-            </a>
+
+            {answers.proprietaire === "achat" ? (
+              <div style={{ textAlign: "center", padding: "10px 0" }}>
+                <div style={{ fontSize: 40, marginBottom: 14 }}>🔍</div>
+                <div style={{ fontSize: 18, fontWeight: 800, color: "#fff", marginBottom: 10 }}>Tu cherches à acheter ?</div>
+                <div style={{ fontSize: 14, color: "#888", marginBottom: 20, lineHeight: 1.7 }}>
+                  Je connais le marché de Tahiti par cœur.<br/>
+                  Dis-moi tes critères et je te trouve les meilleures opportunités — y compris des biens pas encore sur le marché.
+                </div>
+                <div style={{ background: DARK, borderRadius: 12, padding: "14px 16px", marginBottom: 20, border: `1px solid ${BORDER}`, textAlign: "left" }}>
+                  {["Recherche sur mesure selon tes critères", "Accès aux biens off-market", "Accompagnement jusqu'à l'acte"].map(item => (
+                    <div key={item} style={{ display: "flex", gap: 10, marginBottom: 8, fontSize: 13, color: "#ccc" }}>
+                      <span style={{ color: RED }}>✔</span><span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+                <a href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Bonjour Hugo, je cherche à acheter un appartement à Tahiti. J'aimerais qu'on discute de mes critères de recherche.")}`}
+                  target="_blank" rel="noreferrer"
+                  style={{ display: "block", background: "#25D366", color: "#fff", textDecoration: "none", borderRadius: 12, padding: "18px 20px", fontSize: 15, fontWeight: 700, textAlign: "center" }}>
+                  💬 Parler de mon projet d'achat →
+                </a>
+              </div>
+            ) : (
+              <div style={{ textAlign: "center", padding: "10px 0" }}>
+                <div style={{ fontSize: 40, marginBottom: 14 }}>📊</div>
+                <div style={{ fontSize: 18, fontWeight: 800, color: "#fff", marginBottom: 10 }}>Tu veux connaître la valeur du marché ?</div>
+                <div style={{ fontSize: 14, color: "#888", marginBottom: 20, lineHeight: 1.7 }}>
+                  Même sans projet immédiat, connaître la valeur de ton patrimoine c'est utile.<br/>
+                  Je t'envoie une estimation gratuite en quelques heures.
+                </div>
+                <div style={{ background: DARK, borderRadius: 12, padding: "14px 16px", marginBottom: 20, border: `1px solid ${BORDER}`, textAlign: "left" }}>
+                  {["Estimation gratuite sans engagement", "Basée sur les ventes réelles du marché", "Utile pour préparer l'avenir"].map(item => (
+                    <div key={item} style={{ display: "flex", gap: 10, marginBottom: 8, fontSize: 13, color: "#ccc" }}>
+                      <span style={{ color: RED }}>✔</span><span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+                <a href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Bonjour Hugo, je voudrais avoir une idée de la valeur de mon appartement à Tahiti, même si je n'ai pas de projet de vente pour l'instant.")}`}
+                  target="_blank" rel="noreferrer"
+                  style={{ display: "block", background: "#25D366", color: "#fff", textDecoration: "none", borderRadius: 12, padding: "18px 20px", fontSize: 15, fontWeight: 700, textAlign: "center" }}>
+                  💬 Recevoir une estimation gratuite →
+                </a>
+              </div>
+            )}
           </div>
         )}
         {phase === "loading" && <Loading prenom={contact?.prenom} />}
