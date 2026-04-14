@@ -10,8 +10,8 @@ export async function POST(req) {
   const PROJET = {
     maintenant: "veut vendre le plus vite possible",
     sixmois: "veut vendre dans les 6 prochains mois",
-    estimer: "veut d'abord savoir ce que ça vaut",
-    reflechit: "réfléchit encore",
+    estimer: "veut d'abord estimer la valeur de son bien",
+    reflechit: "réfléchit encore à son projet de vente",
   };
   const PROBLEME = {
     charges:   "a des charges impayées ou des appels de charges trimestriels en retard",
@@ -99,6 +99,7 @@ JSON uniquement.`;
         projet:   answers.projet,
         probleme: answers.probleme,
         score:    JSON.parse(clean).score || "",
+        rappel:   contact.rappel || "",
       }),
     });
   } catch(e) {
