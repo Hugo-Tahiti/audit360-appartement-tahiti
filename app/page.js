@@ -10,39 +10,7 @@ const COMMUNES = [
 
 // ── Questions du quiz ─────────────────────────────────────────────────────────
 const STEPS = [
-  {
-    id: "proprietaire",
-    question: "Tu es propriétaire d'un appartement à Tahiti ?",
-    emoji: "🏠",
-    options: [
-      { value: "oui",      label: "Oui, je suis propriétaire", sub: "Et je pense à vendre", icon: "✅", hot: true },
-      { value: "achat",    label: "Non, je cherche à acheter",  sub: "Je suis acquéreur",    icon: "🔍" },
-      { value: "curieux",  label: "Je me renseigne juste",      sub: "Pas de projet précis", icon: "💭" },
-    ],
-  },
-  {
-    id: "projet",
-    question: "Dans combien de temps tu veux vendre ?",
-    emoji: "🎯",
-    options: [
-      { value: "maintenant", label: "Le plus vite possible", sub: "J'ai un projet concret", icon: "🔥", hot: true },
-      { value: "sixmois",    label: "Dans les 6 mois",       sub: "Je me prépare",         icon: "📅" },
-      { value: "estimer",    label: "Je veux d'abord estimer", sub: "Combien ça vaut ?",   icon: "🔍" },
-      { value: "reflechit",  label: "Je réfléchis encore",   sub: "Pas de pression",       icon: "💭" },
-    ],
-  },
-  {
-    id: "probleme",
-    question: "Est-ce que l'un de ces points te concerne ?",
-    emoji: "⚠️",
-    sub: "C'est ce qui bloque 4 ventes sur 10 en Polynésie.",
-    options: [
-      { value: "charges",   label: "Charges impayées",          sub: "Appels de charges en retard",   icon: "💸" },
-      { value: "ag",        label: "PV d'AG manquants",          sub: "Ou travaux votés non soldés",   icon: "📄" },
-      { value: "reglement", label: "Règlement de copropriété",   sub: "Introuvable ou pas à jour",     icon: "📋" },
-      { value: "aucun",     label: "Rien de tout ça",            sub: "Mon dossier est complet",       icon: "✅" },
-    ],
-  },
+  // Q1 — COMMUNE (engagement facile, concret, pas menaçant)
   {
     id: "commune",
     question: "Ton appartement est dans quelle commune ?",
@@ -50,15 +18,52 @@ const STEPS = [
     sub: "Les prix varient jusqu'à +35% selon la commune.",
     type: "select",
   },
+  // Q2 — SURFACE (toujours facile, pas de jugement)
   {
     id: "surface",
     question: "Quelle est la taille de ton appartement ?",
     emoji: "📐",
     options: [
-      { value: "moins50", label: "Studio ou T2",     sub: "Moins de 50 m²",    icon: "🔲" },
-      { value: "50_80",   label: "T2 ou T3",         sub: "50 à 80 m²",        icon: "🔳" },
-      { value: "80_120",  label: "T3 ou T4",         sub: "80 à 120 m²",       icon: "⬛" },
+      { value: "moins50", label: "Studio ou T2",      sub: "Moins de 50 m²",   icon: "🔲" },
+      { value: "50_80",   label: "T2 ou T3",          sub: "50 à 80 m²",       icon: "🔳" },
+      { value: "80_120",  label: "T3 ou T4",          sub: "80 à 120 m²",      icon: "⬛" },
       { value: "plus120", label: "Grand appartement", sub: "Plus de 120 m²",   icon: "🏙️" },
+    ],
+  },
+  // Q3 — PROFIL (maintenant engagé, la question passe mieux)
+  {
+    id: "proprietaire",
+    question: "Tu es propriétaire de cet appartement ?",
+    emoji: "🏠",
+    options: [
+      { value: "oui",     label: "Oui, je suis propriétaire", sub: "Et je pense à vendre", icon: "✅", hot: true },
+      { value: "achat",   label: "Non, je cherche à acheter",  sub: "Je suis acquéreur",   icon: "🔍" },
+      { value: "curieux", label: "Je me renseigne juste",      sub: "Pas de projet précis", icon: "💭" },
+    ],
+  },
+  // Q4 — URGENCE
+  {
+    id: "projet",
+    question: "Dans combien de temps tu veux vendre ?",
+    emoji: "🎯",
+    options: [
+      { value: "maintenant", label: "Le plus vite possible",    sub: "J'ai un projet concret", icon: "🔥", hot: true },
+      { value: "sixmois",    label: "Dans les 6 mois",          sub: "Je me prépare",          icon: "📅" },
+      { value: "estimer",    label: "Je veux d'abord estimer",  sub: "Combien ça vaut ?",      icon: "🔍" },
+      { value: "reflechit",  label: "Je réfléchis encore",      sub: "Pas de pression",        icon: "💭" },
+    ],
+  },
+  // Q5 — PROBLÈME DOSSIER
+  {
+    id: "probleme",
+    question: "Est-ce que l'un de ces points te concerne ?",
+    emoji: "⚠️",
+    sub: "C'est ce qui bloque 4 ventes sur 10 en Polynésie.",
+    options: [
+      { value: "charges",   label: "Charges impayées",          sub: "Appels de charges en retard", icon: "💸" },
+      { value: "ag",        label: "PV d'AG manquants",          sub: "Ou travaux votés non soldés", icon: "📄" },
+      { value: "reglement", label: "Règlement de copropriété",   sub: "Introuvable ou pas à jour",   icon: "📋" },
+      { value: "aucun",     label: "Rien de tout ça",            sub: "Mon dossier est complet",     icon: "✅" },
     ],
   },
 ];
