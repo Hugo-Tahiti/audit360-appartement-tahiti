@@ -10,13 +10,21 @@ const COMMUNES = [
 
 // ── Questions du quiz ─────────────────────────────────────────────────────────
 const STEPS = [
-  // Q1 — COMMUNE (engagement facile, concret, pas menaçant)
+  // Q1 — COMMUNE (boutons pour les 6 principales, plus mobile-friendly)
   {
     id: "commune",
     question: "Ton appartement est dans quelle commune ?",
     emoji: "📍",
     sub: "Les prix varient jusqu'à +35% selon la commune.",
-    type: "select",
+    options: [
+      { value: "Papeete",  label: "Papeete",  sub: "Centre ville",     icon: "🏙️" },
+      { value: "Faa'a",    label: "Faa'a",    sub: "Près de l'aéroport", icon: "✈️" },
+      { value: "Punaauia", label: "Punaauia", sub: "Côte ouest",        icon: "🌊" },
+      { value: "Pirae",    label: "Pirae",    sub: "Est de Papeete",    icon: "🌺" },
+      { value: "Arue",     label: "Arue",     sub: "Pointe Vénus",      icon: "🌴" },
+      { value: "Mahina",   label: "Mahina",   sub: "Nord de Tahiti",    icon: "⛰️" },
+      { value: "Autre commune", label: "Autre commune", sub: "Paea, Papara, Taravao…", icon: "📍" },
+    ],
   },
   // Q2 — SURFACE (toujours facile, pas de jugement)
   {
