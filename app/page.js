@@ -333,7 +333,169 @@ function ContactForm({ answers, onSubmit }) {
   );
 }
 
-// ── Chargement ────────────────────────────────────────────────────────────────
+// ── Résultat immédiat (avant coordonnées) ────────────────────────────────────
+function ResultPreview({ answers, onSubmit }) {
+  const [show, setShow] = useState(false);
+  const [rappel, setRappel] = useState(null);
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const prenomRef = useRef();
+  const telRef = useRef();
+  useEffect(() => { setTimeout(() => setShow(true), 40); }, []);
+
+  const fourchette = getPrixFourchette(answers.commune, answers.surface);
+  const isHot = answers.projet === "maintenant";
+  const score = answers.probleme === "aucun" ? 85 :
+                answers.probleme === "charges" ? 52 :
+                answers.probleme === "ag" ? 61 :
+                answers.probleme === "reglement" ? 68 : 75;
+
+  const scoreColor = score >= 75 ? "#22C55E" : score >= 55 ? "#F59E0B" : RED;
+  const scoreLabel = score >= 75 ? "Dossier solide" : score >= 55 ? "Quelques points à vérifier" : "Points bloquants détectés";
+
+  const rappelOptions = [
+    { value: "aujourd_hui", label: "Aujourd'hui",   icon: "🕐" },
+    { value: "semaine",     label: "Cette semaine", icon: "📅" },
+    { value: "whatsapp",    label: "Par WhatsApp",  icon: "💬" },
+  ];
+
+  const inputStyle = (k) => ({
+    width: "100%", padding: "15px 14px", borderRadius: 12, fontSize: 16,
+    background: errors[k] ? "#1A0A0A" : DARK,
+    border: `2px solid ${errors[k] ? RED : BORDER}`,
+    color: "#fff", outline: "none", boxSizing: "border-box",
+    WebkitAppearance: "none",
+  });
+
+  const submit = () => {
+    if (!rappel) { setErrors({ rappel: "Choisis une option" }); return; }
+    const v = { prenom: prenomRef.current?.value.trim(), tel: telRef.current?.value.trim(), nom: "", email: "", rappel };
+    const e = {};
+    if (!v.prenom) e.prenom = "Requis";
+    if ((v.tel || "").replace(/\D/g, "").length < 6) e.tel = "Numéro invalide";
+    if (Object.keys(e).length) { setErrors(e); return; }
+    setLoading(true);
+    onSubmit(v);
+  };
+
+  return (
+    <div style={{ opacity: show ? 1 : 0, transform: show ? "translateY(0)" : "translateY(12px)", transition: "all 0.4s" }}>
+
+      {/* Barre 100% */}
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "#666", marginBottom: 5 }}>
+          <span style={{ color: "#fff", fontWeight: 600 }}>Ton résultat</span>
+          <span style={{ color: "#22C55E", fontWeight: 700 }}>100% ✓</span>
+        </div>
+        <div style={{ height: 5, background: "#1A1A1A", borderRadius: 99 }}>
+          <div style={{ height: "100%", borderRadius: 99, background: "linear-gradient(90deg,#22C55E,#16A34A)", width: "100%", transition: "width 0.6s" }} />
+        </div>
+      </div>
+
+      {/* Score dossier */}
+      <div style={{ background: DARK, borderRadius: 14, padding: "20px", marginBottom: 16, textAlign: "center", border: `1px solid ${BORDER}` }}>
+        <div style={{ fontSize: 11, color: "#666", letterSpacing: 2, marginBottom: 10 }}>SCORE DOSSIER</div>
+        <div style={{ fontSize: 56, fontWeight: 900, color: scoreColor, marginBottom: 4 }}>{score}</div>
+        <div style={{ fontSize: 13, color: scoreColor, fontWeight: 700, marginBottom: 8 }}>{scoreLabel}</div>
+        <div style={{ fontSize: 12, color: "#555" }}>sur 100 points</div>
+      </div>
+
+      {/* Fourchette avec photo Hugo */}
+      <div style={{ background: "linear-gradient(135deg,#1A1A1A,#0D0D0D)", border: `1px solid ${RED}44`, borderRadius: 14, padding: "20px", marginBottom: 16, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, opacity: 0.03, backgroundImage: `radial-gradient(circle,${RED} 1px,transparent 1px)`, backgroundSize: "16px 16px" }} />
+        <div style={{ position: "relative" }}>
+          <div style={{ fontSize: 11, color: RED, fontWeight: 800, letterSpacing: 2, marginBottom: 12, textAlign: "center" }}>
+            {isHot ? "🔥 PROFIL VENDEUR PRIORITAIRE" : "📊 ESTIMATION INDICATIVE"}
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
+            <div style={{ width: 48, height: 48, borderRadius: "50%", overflow: "hidden", border: `2px solid ${RED}`, flexShrink: 0 }}>
+              <img src="/hugo.png" alt="Hugo" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
+            </div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: "#fff" }}>Hugo Vidus</div>
+              <div style={{ fontSize: 11, color: "#666" }}>KW Polynésie · Estimation marché</div>
+            </div>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 13, color: "#888", marginBottom: 6 }}>
+              Ton {fourchette.label} à <strong style={{ color: "#fff" }}>{answers.commune}</strong> pourrait valoir entre
+            </div>
+            <div style={{ fontSize: 26, fontWeight: 900, color: RED, marginBottom: 2 }}>{fourchette.min}</div>
+            <div style={{ fontSize: 13, color: "#666", marginBottom: 4 }}>et</div>
+            <div style={{ fontSize: 26, fontWeight: 900, color: "#fff", marginBottom: 12 }}>{fourchette.max}</div>
+            <div style={{ background: "#0A0A0A", borderRadius: 8, padding: "10px 14px", fontSize: 12, color: "#888", lineHeight: 1.6 }}>
+              ⚠️ Cette fourchette est indicative. La valeur exacte dépend de l'étage, la vue, l'état et les spécificités de ton bien. Seule une visite gratuite permet d'établir le vrai prix du marché.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* CTA — formulaire minimaliste */}
+      <div style={{ background: DARK, borderRadius: 14, padding: "20px", border: `1px solid ${BORDER}`, marginBottom: 16 }}>
+        <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", marginBottom: 4, textAlign: "center" }}>
+          Tu veux l'estimation exacte ?
+        </div>
+        <div style={{ fontSize: 13, color: "#888", marginBottom: 16, textAlign: "center" }}>
+          Hugo se déplace gratuitement pour évaluer ton bien
+        </div>
+
+        {/* Rappel */}
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ fontSize: 12, color: "#888", marginBottom: 10, fontWeight: 700 }}>QUAND TE CONTACTER ?</div>
+          <div style={{ display: "flex", gap: 8 }}>
+            {rappelOptions.map(opt => (
+              <button key={opt.value} onClick={() => { setRappel(opt.value); setErrors({ ...errors, rappel: null }); }}
+                style={{
+                  flex: 1, background: rappel === opt.value ? RED : "#0A0A0A",
+                  border: `2px solid ${rappel === opt.value ? RED : BORDER}`,
+                  borderRadius: 10, padding: "10px 6px", cursor: "pointer",
+                  textAlign: "center", transition: "all 0.2s",
+                }}>
+                <div style={{ fontSize: 18 }}>{opt.icon}</div>
+                <div style={{ fontSize: 11, color: "#fff", fontWeight: 600, marginTop: 4 }}>{opt.label}</div>
+              </button>
+            ))}
+          </div>
+          {errors.rappel && <div style={{ fontSize: 11, color: RED, marginTop: 6 }}>⚠ {errors.rappel}</div>}
+        </div>
+
+        {/* Prénom + Tel */}
+        <div style={{ marginBottom: 12 }}>
+          <input ref={prenomRef} type="text" placeholder="Moana" autoComplete="given-name" autoCapitalize="words"
+            style={inputStyle("prenom")} />
+          {errors.prenom && <div style={{ fontSize: 11, color: RED, marginTop: 3 }}>⚠ {errors.prenom}</div>}
+        </div>
+        <div style={{ marginBottom: 16 }}>
+          <input ref={telRef} type="tel" placeholder="87 XX XX XX" autoComplete="tel" inputMode="tel"
+            style={inputStyle("tel")} />
+          {errors.tel && <div style={{ fontSize: 11, color: RED, marginTop: 3 }}>⚠ {errors.tel}</div>}
+        </div>
+
+        <button onClick={submit} disabled={loading} style={{
+          width: "100%", background: loading ? "#333" : RED,
+          color: "#fff", border: "none", borderRadius: 14,
+          padding: "20px 24px", fontSize: 17, fontWeight: 800,
+          cursor: loading ? "not-allowed" : "pointer",
+          boxShadow: loading ? "none" : `0 4px 24px ${RED}55`,
+          display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
+        }}>
+          {loading
+            ? <><span style={{ display: "inline-block", animation: "spin 0.7s linear infinite" }}>⟳</span> Envoi…</>
+            : "Hugo me rappelle →"}
+        </button>
+      </div>
+
+      <div style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap" }}>
+        {["🔒 Confidentiel", "🚗 Visite gratuite", "💯 Sans engagement"].map(t => (
+          <div key={t} style={{ fontSize: 11, color: "#555", background: "#111", borderRadius: 20, padding: "4px 10px", border: "1px solid #1E1E1E" }}>{t}</div>
+        ))}
+      </div>
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+    </div>
+  );
+}
+
+
 function Loading({ prenom }) {
   const msgs = ["Analyse du dossier en cours…", "Vérification des risques copropriété…", "Calcul de la valeur du marché…", "Préparation de ton résultat…"];
   const [i, setI] = useState(0);
@@ -503,13 +665,12 @@ export default function Page() {
     const a = { ...answers, [id]: val };
     setAnswers(a);
     track("step_complete", { step: id, value: val });
-    // Sortie si pas propriétaire
     if (id === "proprietaire" && val !== "oui") {
       setPhase("not_owner");
       return;
     }
     if (stepIdx < STEPS.length - 1) setStepIdx(stepIdx + 1);
-    else setPhase("contact");
+    else setPhase("result_preview"); // ← résultat immédiat sans attente
   };
 
   const onContact = async (data) => {
@@ -566,6 +727,11 @@ export default function Page() {
         {phase === "quiz" && (
           <QuizStep step={STEPS[stepIdx]} idx={stepIdx} total={STEPS.length} onAnswer={onAnswer} />
         )}
+
+        {phase === "result_preview" && (
+          <ResultPreview answers={answers} onSubmit={onContact} />
+        )}
+
         {phase === "contact" && (
           <ContactForm answers={answers} onSubmit={onContact} />
         )}
