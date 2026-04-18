@@ -368,8 +368,7 @@ function ResultPreview({ answers, onSubmit }) {
   });
 
   const submit = () => {
-    if (!rappel) { setErrors({ rappel: "Choisis une option" }); return; }
-    const v = { prenom: prenomRef.current?.value.trim(), tel: telRef.current?.value.trim(), nom: "", email: "", rappel };
+    const v = { prenom: prenomRef.current?.value.trim(), tel: telRef.current?.value.trim(), nom: "", email: "", rappel: "" };
     const e = {};
     if (!v.prenom) e.prenom = "Requis";
     if ((v.tel || "").replace(/\D/g, "").length < 6) e.tel = "Numéro invalide";
@@ -471,26 +470,6 @@ function ResultPreview({ answers, onSubmit }) {
         </div>
         <div style={{ fontSize: 13, color: "#888", marginBottom: 16, textAlign: "center" }}>
           Gratuit · Sans engagement · Résultat immédiat
-        </div>
-
-        {/* Rappel */}
-        <div style={{ marginBottom: 16 }}>
-          <div style={{ fontSize: 12, color: "#888", marginBottom: 10, fontWeight: 700 }}>QUAND TE CONTACTER ?</div>
-          <div style={{ display: "flex", gap: 8 }}>
-            {rappelOptions.map(opt => (
-              <button key={opt.value} onClick={() => { setRappel(opt.value); setErrors({ ...errors, rappel: null }); }}
-                style={{
-                  flex: 1, background: rappel === opt.value ? RED : "#0A0A0A",
-                  border: `2px solid ${rappel === opt.value ? RED : BORDER}`,
-                  borderRadius: 10, padding: "10px 6px", cursor: "pointer",
-                  textAlign: "center", transition: "all 0.2s",
-                }}>
-                <div style={{ fontSize: 18 }}>{opt.icon}</div>
-                <div style={{ fontSize: 11, color: "#fff", fontWeight: 600, marginTop: 4 }}>{opt.label}</div>
-              </button>
-            ))}
-          </div>
-          {errors.rappel && <div style={{ fontSize: 11, color: RED, marginTop: 6 }}>⚠ {errors.rappel}</div>}
         </div>
 
         {/* Prénom + Tel */}
