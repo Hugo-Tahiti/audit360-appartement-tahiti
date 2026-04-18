@@ -483,6 +483,9 @@ function ResultPreview({ answers, onSubmit }) {
             ? <><span style={{ display: "inline-block", animation: "spin 0.7s linear infinite" }}>⟳</span> Envoi…</>
             : "Hugo me rappelle →"}
         </button>
+        <div style={{ textAlign: "center", fontSize: 12, color: "#666", marginTop: 10, lineHeight: 1.6 }}>
+          ✅ Après confirmation, tu reçois l'analyse complète de ton dossier — points forts, risques détectés et conseils avant la mise en vente.
+        </div>
       </div>
 
       <div style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap" }}>
