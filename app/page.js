@@ -470,7 +470,7 @@ function ResultPreview({ answers, onSubmit }) {
           Débloque ton rapport complet
         </div>
         <div style={{ fontSize: 13, color: "#888", marginBottom: 16, textAlign: "center" }}>
-          Gratuit · Immédiat · Hugo te rappelle ensuite
+          Gratuit · Sans engagement · Résultat immédiat
         </div>
 
         {/* Rappel */}
