@@ -435,18 +435,8 @@ function ResultPreview({ answers, onSubmit }) {
         <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", marginBottom: 4, textAlign: "center" }}>
           Tu veux l'estimation exacte ?
         </div>
-        <div style={{ fontSize: 13, color: "#888", marginBottom: 12, textAlign: "center" }}>
-          Hugo se déplace gratuitement pour évaluer ton bien
-        </div>
-
-        {/* Promesse visible */}
-        <div style={{ background: "#0A1A0A", border: "1px solid #22C55E44", borderLeft: "4px solid #22C55E", borderRadius: 10, padding: "12px 14px", marginBottom: 16 }}>
-          <div style={{ fontSize: 13, color: "#22C55E", fontWeight: 700, marginBottom: 4 }}>
-            ✅ Tu reçois immédiatement
-          </div>
-          <div style={{ fontSize: 12, color: "#aaa", lineHeight: 1.7 }}>
-            L'analyse complète de ton dossier — points forts, risques détectés et conseils concrets avant la mise en vente.
-          </div>
+        <div style={{ fontSize: 13, color: "#888", marginBottom: 20, textAlign: "center" }}>
+          Laisse tes coordonnées — Hugo te rappelle<br/>pour ton estimation gratuite.
         </div>
 
         {/* Rappel */}
@@ -496,7 +486,7 @@ function ResultPreview({ answers, onSubmit }) {
       </div>
 
       <div style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap" }}>
-        {["🔒 Confidentiel", "🚗 Visite gratuite", "💯 Sans engagement"].map(t => (
+        {["🔒 Confidentiel", "🎯 Estimation gratuite", "💯 Sans engagement"].map(t => (
           <div key={t} style={{ fontSize: 11, color: "#555", background: "#111", borderRadius: 20, padding: "4px 10px", border: "1px solid #1E1E1E" }}>{t}</div>
         ))}
       </div>
@@ -544,75 +534,83 @@ function ResultPage({ result, answers, contact }) {
 
   const SLABELS = { moins50: "studio / T2", "50_80": "T2 / T3", "80_120": "T3 / T4", plus120: "appartement prestige" };
   const surface = SLABELS[answers.surface] || "appartement";
-  const waMsg = encodeURIComponent(`Bonjour Hugo, je m'appelle ${contact.prenom} ${contact.nom}. J'ai un ${surface} à ${answers.commune} et je voudrais une estimation gratuite.`);
+  const waMsg = encodeURIComponent(`Bonjour Hugo, je m'appelle ${contact.prenom}. J'ai un ${surface} à ${answers.commune} et je souhaite une estimation gratuite.`);
   const waLink = `https://wa.me/${WA_NUMBER}?text=${waMsg}`;
+  const scoreColor = count >= 80 ? "#22C55E" : count >= 60 ? "#F59E0B" : RED;
 
   return (
     <div style={{ opacity: show ? 1 : 0, transform: show ? "translateY(0)" : "translateY(16px)", transition: "all 0.5s" }}>
 
-      {/* Score */}
+      {/* Header rapport */}
       <div style={{ background: "linear-gradient(135deg,#1A1A1A,#0D0D0D)", borderRadius: 16, padding: "22px 20px", marginBottom: 14, border: "1px solid #2A2A2A", textAlign: "center", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, opacity: 0.04, backgroundImage: `radial-gradient(circle,${RED} 1px,transparent 1px)`, backgroundSize: "18px 18px" }} />
         <div style={{ position: "relative" }}>
-          <div style={{ fontSize: 11, letterSpacing: 3, color: "#666", marginBottom: 8 }}>
+          <div style={{ fontSize: 10, letterSpacing: 3, color: "#555", marginBottom: 6 }}>RAPPORT EXCLUSIF · KW POLYNÉSIE</div>
+          <div style={{ fontSize: 11, letterSpacing: 2, color: "#666", marginBottom: 8 }}>
             {contact.prenom.toUpperCase()}, TON RÉSULTAT
           </div>
-          <div style={{ fontSize: 68, fontWeight: 900, lineHeight: 1, background: `linear-gradient(135deg,${RED},#FF6B6B)`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginBottom: 4 }}>
-            {count}%
+          <div style={{ fontSize: 68, fontWeight: 900, lineHeight: 1, color: scoreColor, marginBottom: 4 }}>
+            {count}<span style={{ fontSize: 32 }}>/100</span>
           </div>
-          <div style={{ fontSize: 12, color: "#555", marginBottom: 12 }}>de chances de vendre au prix demandé avec un dossier complet</div>
+          <div style={{ fontSize: 12, color: "#555", marginBottom: 12 }}>
+            {count >= 80 ? "✅ Dossier solide" : count >= 60 ? "⚠️ Quelques points à régler" : "🔴 Points bloquants détectés"}
+          </div>
           <div style={{ background: `${RED}15`, border: `1px solid ${RED}33`, borderRadius: 10, padding: "12px 16px" }}>
             <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", lineHeight: 1.4 }}>{result.titre}</div>
           </div>
         </div>
       </div>
 
-      {/* Hugo + message */}
-      <div style={{ display: "flex", gap: 14, alignItems: "flex-start", background: DARK, border: `1px solid ${BORDER}`, borderRadius: 14, padding: "16px", marginBottom: 12 }}>
+      {/* Hugo + message personnel */}
+      <div style={{ display: "flex", gap: 14, alignItems: "flex-start", background: DARK, border: `1px solid ${BORDER}`, borderRadius: 14, padding: "16px", marginBottom: 14 }}>
         <img src="/hugo.png" alt="Hugo Vidus" style={{ width: 56, height: 56, borderRadius: "50%", objectFit: "cover", objectPosition: "top", border: `2px solid ${RED}`, flexShrink: 0 }} />
         <div>
           <div style={{ fontSize: 12, color: RED, fontWeight: 700, marginBottom: 4 }}>HUGO VIDUS · KW POLYNÉSIE</div>
-          <div style={{ fontSize: 14, color: "#ddd", lineHeight: 1.6, fontStyle: "italic" }}>"{result.accroche}"</div>
+          <div style={{ fontSize: 14, color: "#ddd", lineHeight: 1.6, fontStyle: "italic" }}>"{result.message_hugo || result.accroche}"</div>
         </div>
       </div>
 
-      {/* Risque */}
-      {result.risque && (
-        <div style={{ background: "#1A0A0A", borderLeft: `4px solid ${RED}`, borderRadius: "0 10px 10px 0", border: `1px solid ${RED}33`, borderLeft: `4px solid ${RED}`, padding: "14px 16px", marginBottom: 10, fontSize: 14, color: "#ccc", lineHeight: 1.6 }}>
-          ⚠️ <strong style={{ color: RED }}>Point de vigilance — </strong>{result.risque}
+      {/* Diagnostic dossier */}
+      {result.diagnostic && (
+        <div style={{ background: "#111", borderRadius: 12, padding: "16px", marginBottom: 12, border: `1px solid ${BORDER}` }}>
+          <div style={{ fontSize: 11, color: "#555", letterSpacing: 2, marginBottom: 8 }}>📋 DIAGNOSTIC DOSSIER</div>
+          <div style={{ fontSize: 14, color: "#ccc", lineHeight: 1.7 }}>{result.diagnostic}</div>
         </div>
       )}
 
-      {/* Opportunité */}
-      {result.opportunite && (
-        <div style={{ background: "#111", borderRadius: 10, padding: "12px 16px", marginBottom: 10, fontSize: 14, color: "#aaa", lineHeight: 1.6, border: `1px solid ${BORDER}` }}>
-          📊 {result.opportunite}
+      {/* Risque principal */}
+      {result.risque_principal && (
+        <div style={{ background: "#1A0A0A", borderLeft: `4px solid ${RED}`, borderRadius: "0 10px 10px 0", border: `1px solid ${RED}33`, padding: "14px 16px", marginBottom: 12, fontSize: 14, color: "#ccc", lineHeight: 1.6 }}>
+          ⚠️ <strong style={{ color: RED }}>Point critique — </strong>{result.risque_principal}
         </div>
       )}
 
-      {/* Action immédiate */}
-      {result.action && (
-        <div style={{ background: "#0A160A", border: "1px solid #1A3A1A", borderRadius: 10, padding: "12px 16px", marginBottom: 18, fontSize: 14, color: "#bbb", lineHeight: 1.6 }}>
-          ✅ <strong style={{ color: "#4CAF50" }}>À faire maintenant — </strong>{result.action}
+      {/* Marché local */}
+      {result.marche_local && (
+        <div style={{ background: "#0A0A1A", border: "1px solid #1A1A3A", borderRadius: 10, padding: "14px 16px", marginBottom: 12, fontSize: 14, color: "#aaa", lineHeight: 1.6 }}>
+          📊 <strong style={{ color: "#6B8AFF" }}>Ton marché — </strong>{result.marche_local}
         </div>
       )}
 
-      {/* Ce que comprend la visite */}
-      <div style={{ background: DARK, borderRadius: 12, padding: "16px 18px", marginBottom: 18, border: `1px solid ${BORDER}` }}>
-        <div style={{ fontSize: 11, color: "#555", letterSpacing: 2, marginBottom: 12 }}>LA VISITE GRATUITE COMPREND</div>
-        {[
-          "Vérification PV d'AG des 3 dernières années",
-          "Contrôle des charges & appels trimestriels",
-          "Validation règlement de copropriété",
-          "Vérification titre de propriété & chaîne de propriété",
-          "Estimation sur ventes réelles (pas les prix affichés)",
-          "Rapport remis sous 72h — Gratuit",
-        ].map(item => (
-          <div key={item} style={{ display: "flex", gap: 10, marginBottom: 8, fontSize: 14, color: "#ccc" }}>
-            <span style={{ color: RED, fontWeight: 700 }}>✔</span><span>{item}</span>
-          </div>
-        ))}
-      </div>
+      {/* Avantage concurrentiel */}
+      {result.avantage_concurrentiel && (
+        <div style={{ background: "#0A160A", border: "1px solid #1A3A1A", borderRadius: 10, padding: "14px 16px", marginBottom: 12, fontSize: 14, color: "#bbb", lineHeight: 1.6 }}>
+          💪 <strong style={{ color: "#22C55E" }}>Tes atouts — </strong>{result.avantage_concurrentiel}
+        </div>
+      )}
+
+      {/* Plan d'action */}
+      {result.plan_action && result.plan_action.length > 0 && (
+        <div style={{ background: DARK, borderRadius: 12, padding: "16px 18px", marginBottom: 18, border: `1px solid ${BORDER}` }}>
+          <div style={{ fontSize: 11, color: "#555", letterSpacing: 2, marginBottom: 12 }}>✅ TON PLAN D'ACTION</div>
+          {result.plan_action.map((action, i) => (
+            <div key={i} style={{ display: "flex", gap: 12, marginBottom: 10, fontSize: 14, color: "#ccc", lineHeight: 1.5 }}>
+              <span style={{ background: RED, color: "#fff", borderRadius: "50%", width: 22, height: 22, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, flexShrink: 0 }}>{i + 1}</span>
+              <span>{action}</span>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* CTA WhatsApp */}
       <a href={waLink} target="_blank" rel="noreferrer" style={{
@@ -626,7 +624,7 @@ function ResultPage({ result, answers, contact }) {
 
       {/* Garanties */}
       <div style={{ display: "flex", justifyContent: "center", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
-        {["🔒 Confidentiel", "⏱ Réponse rapide", "💯 Gratuit"].map(t => (
+        {["🔒 Confidentiel", "🎯 Estimation gratuite", "💯 Sans engagement"].map(t => (
           <div key={t} style={{ fontSize: 11, color: "#555", background: "#111", borderRadius: 20, padding: "4px 12px", border: "1px solid #1E1E1E" }}>{t}</div>
         ))}
       </div>
