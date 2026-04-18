@@ -412,7 +412,7 @@ function ResultPreview({ answers, onSubmit }) {
           <div style={{ fontSize: 22, fontWeight: 900, color: RED }}>{fourchette.min}</div>
           <div style={{ fontSize: 12, color: "#555", margin: "2px 0" }}>—</div>
           <div style={{ fontSize: 22, fontWeight: 900, color: "#fff", marginBottom: 8 }}>{fourchette.max}</div>
-          <div style={{ fontSize: 11, color: "#555", fontStyle: "italic" }}>Indicatif · Estimation terrain nécessaire</div>
+          <div style={{ fontSize: 11, color: "#555", fontStyle: "italic" }}>📊 Fourchette indicative · Ton rapport affine tout ↓</div>
         </div>
       </div>
 
@@ -645,6 +645,12 @@ function ResultPage({ result, answers, contact }) {
           ))}
         </div>
       )}
+
+      {/* Mention estimation terrain */}
+      <div style={{ background: "#0A0A0A", border: `1px solid ${BORDER}`, borderRadius: 10, padding: "12px 16px", marginBottom: 14, fontSize: 13, color: "#666", lineHeight: 1.6, textAlign: "center" }}>
+        ℹ️ Ce rapport est basé sur tes réponses et les données du marché.<br/>
+        <strong style={{ color: "#888" }}>Seule la visite gratuite avec Hugo permet d'établir le prix exact</strong> selon l'état réel, l'étage, la vue et les spécificités de ton bien.
+      </div>
 
       {/* CTA WhatsApp */}
       <a href={waLink} target="_blank" rel="noreferrer" style={{
