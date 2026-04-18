@@ -194,7 +194,6 @@ function ContactForm({ answers, onSubmit }) {
   const refs = {
     prenom: useRef(),
     tel:    useRef(),
-    email:  useRef(),
   };
   const [rappel, setRappel] = useState(null);
   const [errors, setErrors] = useState({});
@@ -210,14 +209,13 @@ function ContactForm({ answers, onSubmit }) {
     const v = {
       prenom: refs.prenom.current?.value.trim(),
       tel:    refs.tel.current?.value.trim(),
-      email:  refs.email.current?.value.trim(),
       nom:    "",
+      email:  "",
       rappel,
     };
     const e = {};
     if (!v.prenom) e.prenom = "Requis";
     if ((v.tel || "").replace(/\D/g, "").length < 6) e.tel = "Numéro invalide";
-    if (!(v.email || "").includes("@")) e.email = "Email invalide";
     if (Object.keys(e).length) { setErrors(e); return; }
     setLoading(true);
     onSubmit(v);
@@ -307,11 +305,6 @@ function ContactForm({ answers, onSubmit }) {
           <label style={{ display: "block", fontSize: 12, color: "#888", marginBottom: 5, fontWeight: 700 }}>TÉLÉPHONE / WHATSAPP <span style={{ color: RED }}>*</span></label>
           <input ref={refs.tel} type="tel" placeholder="87 XX XX XX" autoComplete="tel" inputMode="tel" style={inputStyle("tel")} onFocus={e => e.target.style.borderColor = RED} onBlur={e => e.target.style.borderColor = errors.tel ? RED : BORDER} />
           {errors.tel && <div style={{ fontSize: 11, color: RED, marginTop: 3 }}>⚠ {errors.tel}</div>}
-        </div>
-        <div style={{ marginBottom: 14 }}>
-          <label style={{ display: "block", fontSize: 12, color: "#888", marginBottom: 5, fontWeight: 700 }}>EMAIL <span style={{ color: RED }}>*</span></label>
-          <input ref={refs.email} type="email" placeholder="marie@example.com" autoComplete="email" inputMode="email" autoCapitalize="off" style={inputStyle("email")} onFocus={e => e.target.style.borderColor = RED} onBlur={e => e.target.style.borderColor = errors.email ? RED : BORDER} />
-          {errors.email && <div style={{ fontSize: 11, color: RED, marginTop: 3 }}>⚠ {errors.email}</div>}
         </div>
 
         <button type="submit" disabled={loading} style={{
