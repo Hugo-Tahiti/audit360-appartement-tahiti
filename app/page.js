@@ -384,7 +384,7 @@ function ResultPreview({ answers, onSubmit }) {
       {/* Barre 100% */}
       <div style={{ marginBottom: 20 }}>
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "#666", marginBottom: 5 }}>
-          <span style={{ color: "#fff", fontWeight: 600 }}>Ton résultat</span>
+          <span style={{ color: "#fff", fontWeight: 600 }}>Analyse terminée</span>
           <span style={{ color: "#22C55E", fontWeight: 700 }}>100% ✓</span>
         </div>
         <div style={{ height: 5, background: "#1A1A1A", borderRadius: 99 }}>
@@ -392,51 +392,85 @@ function ResultPreview({ answers, onSubmit }) {
         </div>
       </div>
 
-      {/* Score dossier */}
-      <div style={{ background: DARK, borderRadius: 14, padding: "20px", marginBottom: 16, textAlign: "center", border: `1px solid ${BORDER}` }}>
-        <div style={{ fontSize: 11, color: "#666", letterSpacing: 2, marginBottom: 10 }}>SCORE DOSSIER</div>
-        <div style={{ fontSize: 56, fontWeight: 900, color: scoreColor, marginBottom: 4 }}>{score}</div>
-        <div style={{ fontSize: 13, color: scoreColor, fontWeight: 700, marginBottom: 8 }}>{scoreLabel}</div>
-        <div style={{ fontSize: 12, color: "#555" }}>sur 100 points</div>
-      </div>
+      {/* Score + fourchette visibles */}
+      <div style={{ background: DARK, borderRadius: 14, padding: "20px", marginBottom: 14, textAlign: "center", border: `1px solid ${BORDER}` }}>
+        <div style={{ fontSize: 11, color: "#666", letterSpacing: 2, marginBottom: 8 }}>SCORE DOSSIER</div>
+        <div style={{ fontSize: 64, fontWeight: 900, color: scoreColor, marginBottom: 4 }}>{score}<span style={{ fontSize: 24 }}>/100</span></div>
+        <div style={{ fontSize: 13, color: scoreColor, fontWeight: 700, marginBottom: 14 }}>{scoreLabel}</div>
 
-      {/* Fourchette avec photo Hugo */}
-      <div style={{ background: "linear-gradient(135deg,#1A1A1A,#0D0D0D)", border: `1px solid ${RED}44`, borderRadius: 14, padding: "20px", marginBottom: 16, position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, opacity: 0.03, backgroundImage: `radial-gradient(circle,${RED} 1px,transparent 1px)`, backgroundSize: "16px 16px" }} />
-        <div style={{ position: "relative" }}>
-          <div style={{ fontSize: 11, color: RED, fontWeight: 800, letterSpacing: 2, marginBottom: 12, textAlign: "center" }}>
-            {isHot ? "🔥 PROFIL VENDEUR PRIORITAIRE" : "📊 ESTIMATION INDICATIVE"}
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
-            <div style={{ width: 48, height: 48, borderRadius: "50%", overflow: "hidden", border: `2px solid ${RED}`, flexShrink: 0 }}>
+        {/* Fourchette */}
+        <div style={{ borderTop: `1px solid ${BORDER}`, paddingTop: 14 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 8 }}>
+            <div style={{ width: 32, height: 32, borderRadius: "50%", overflow: "hidden", border: `2px solid ${RED}` }}>
               <img src="/hugo.png" alt="Hugo" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
             </div>
-            <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#fff" }}>Hugo Vidus</div>
-              <div style={{ fontSize: 11, color: "#666" }}>KW Polynésie · Estimation marché</div>
+            <div style={{ fontSize: 11, color: "#666" }}>Hugo Vidus · KW Polynésie</div>
+          </div>
+          <div style={{ fontSize: 12, color: "#888", marginBottom: 4 }}>
+            {isHot ? "🔥" : "📊"} {fourchette.label} à <strong style={{ color: "#fff" }}>{answers.commune}</strong>
+          </div>
+          <div style={{ fontSize: 22, fontWeight: 900, color: RED }}>{fourchette.min}</div>
+          <div style={{ fontSize: 12, color: "#555", margin: "2px 0" }}>—</div>
+          <div style={{ fontSize: 22, fontWeight: 900, color: "#fff", marginBottom: 8 }}>{fourchette.max}</div>
+          <div style={{ fontSize: 11, color: "#555", fontStyle: "italic" }}>Indicatif · Estimation terrain nécessaire</div>
+        </div>
+      </div>
+
+      {/* APERÇU FLOU — rapport complet verrouillé */}
+      <div style={{ position: "relative", marginBottom: 16, borderRadius: 14, overflow: "hidden" }}>
+
+        {/* Contenu flou simulé */}
+        <div style={{ filter: "blur(4px)", pointerEvents: "none", userSelect: "none" }}>
+          <div style={{ background: "#111", borderRadius: 12, padding: "16px", marginBottom: 8, border: `1px solid ${BORDER}` }}>
+            <div style={{ fontSize: 11, color: "#555", letterSpacing: 2, marginBottom: 8 }}>📋 DIAGNOSTIC DOSSIER</div>
+            <div style={{ fontSize: 14, color: "#ccc", lineHeight: 1.7 }}>
+              {answers.probleme === "aucun"
+                ? "Ton dossier semble bien préparé. Quelques points de vigilance à anticiper avant la mise en vente pour éviter les mauvaises surprises chez le notaire..."
+                : answers.probleme === "charges"
+                ? "Les charges impayées constituent le point le plus sensible de ton dossier. Le notaire les déduira directement du prix de vente le jour de l'acte..."
+                : answers.probleme === "ag"
+                ? "Les PV d'AG manquants peuvent bloquer ta vente. Un acquéreur informé demandera systématiquement ces documents avant de s'engager..."
+                : "Le règlement de copropriété est un document clé que le notaire exige impérativement. Sans lui, l'acte ne peut pas être signé..."}
             </div>
           </div>
-          <div style={{ textAlign: "center" }}>
-            <div style={{ fontSize: 13, color: "#888", marginBottom: 6 }}>
-              Ton {fourchette.label} à <strong style={{ color: "#fff" }}>{answers.commune}</strong> pourrait valoir entre
-            </div>
-            <div style={{ fontSize: 26, fontWeight: 900, color: RED, marginBottom: 2 }}>{fourchette.min}</div>
-            <div style={{ fontSize: 13, color: "#666", marginBottom: 4 }}>et</div>
-            <div style={{ fontSize: 26, fontWeight: 900, color: "#fff", marginBottom: 12 }}>{fourchette.max}</div>
-            <div style={{ background: "#0A0A0A", borderRadius: 8, padding: "10px 14px", fontSize: 12, color: "#888", lineHeight: 1.6 }}>
-              ⚠️ Cette fourchette est indicative. La valeur exacte dépend de l'étage, la vue, l'état et les spécificités de ton bien. Seule une visite gratuite permet d'établir le vrai prix du marché.
-            </div>
+          <div style={{ background: "#0A0A1A", border: `1px solid #1A1A3A`, borderRadius: 10, padding: "14px 16px", marginBottom: 8 }}>
+            <div style={{ fontSize: 14, color: "#aaa" }}>📊 Ton marché local — {answers.commune} : demande active, profil acquéreurs...</div>
+          </div>
+          <div style={{ background: "#0A160A", border: "1px solid #1A3A1A", borderRadius: 10, padding: "14px 16px", marginBottom: 8 }}>
+            <div style={{ fontSize: 14, color: "#bbb" }}>💪 Tes atouts — Surface, localisation, timing favorable...</div>
+          </div>
+          <div style={{ background: DARK, borderRadius: 12, padding: "16px", border: `1px solid ${BORDER}` }}>
+            <div style={{ fontSize: 11, color: "#555", letterSpacing: 2, marginBottom: 8 }}>✅ PLAN D'ACTION — 3 étapes identifiées</div>
+            {["Étape 1 — Action prioritaire cette semaine", "Étape 2 — Documents à préparer", "Étape 3 — Stratégie de mise en vente"].map((a, i) => (
+              <div key={i} style={{ display: "flex", gap: 10, marginBottom: 8, fontSize: 13, color: "#777" }}>
+                <span style={{ background: "#333", color: "#fff", borderRadius: "50%", width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, flexShrink: 0 }}>{i+1}</span>
+                <span>{a}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Overlay déblocage */}
+        <div style={{
+          position: "absolute", inset: 0,
+          background: "linear-gradient(to bottom, transparent 0%, #0A0A0A88 30%, #0A0A0AEE 60%, #0A0A0A 100%)",
+          display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "20px 16px",
+        }}>
+          <div style={{ textAlign: "center", marginBottom: 8 }}>
+            <div style={{ fontSize: 18 }}>🔒</div>
+            <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", marginBottom: 4 }}>Rapport complet verrouillé</div>
+            <div style={{ fontSize: 12, color: "#888" }}>Diagnostic · Risques · Marché local · Plan d'action</div>
           </div>
         </div>
       </div>
 
-      {/* CTA — formulaire minimaliste */}
-      <div style={{ background: DARK, borderRadius: 14, padding: "20px", border: `1px solid ${BORDER}`, marginBottom: 16 }}>
+      {/* Formulaire déblocage */}
+      <div style={{ background: DARK, borderRadius: 14, padding: "20px", border: `1px solid ${RED}44`, marginBottom: 16 }}>
         <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", marginBottom: 4, textAlign: "center" }}>
-          Tu veux l'estimation exacte ?
+          Débloque ton rapport complet
         </div>
-        <div style={{ fontSize: 13, color: "#888", marginBottom: 20, textAlign: "center" }}>
-          Laisse tes coordonnées — Hugo te rappelle<br/>pour ton estimation gratuite.
+        <div style={{ fontSize: 13, color: "#888", marginBottom: 16, textAlign: "center" }}>
+          Gratuit · Immédiat · Hugo te rappelle ensuite
         </div>
 
         {/* Rappel */}
@@ -480,13 +514,13 @@ function ResultPreview({ answers, onSubmit }) {
           display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
         }}>
           {loading
-            ? <><span style={{ display: "inline-block", animation: "spin 0.7s linear infinite" }}>⟳</span> Envoi…</>
-            : "Hugo me rappelle →"}
+            ? <><span style={{ display: "inline-block", animation: "spin 0.7s linear infinite" }}>⟳</span> Analyse en cours…</>
+            : "🔓 Voir mon rapport complet →"}
         </button>
       </div>
 
       <div style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap" }}>
-        {["🔒 Confidentiel", "🎯 Estimation gratuite", "💯 Sans engagement"].map(t => (
+        {["🔒 Confidentiel", "🎯 Rapport gratuit", "💯 Sans engagement"].map(t => (
           <div key={t} style={{ fontSize: 11, color: "#555", background: "#111", borderRadius: 20, padding: "4px 10px", border: "1px solid #1E1E1E" }}>{t}</div>
         ))}
       </div>
