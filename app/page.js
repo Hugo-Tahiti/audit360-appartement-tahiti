@@ -263,7 +263,7 @@ function ContactForm({ answers, onSubmit }) {
           <div style={{ fontSize: 13, color: "#666", marginBottom: 4 }}>et</div>
           <div style={{ fontSize: 22, fontWeight: 900, color: "#fff", marginBottom: 10 }}>{fourchette.max}</div>
           <div style={{ background: `${RED}20`, borderRadius: 8, padding: "8px 12px", fontSize: 12, color: "#aaa" }}>
-            👇 Entre tes coordonnées pour recevoir l'estimation précise et l'analyse de ton dossier
+            👇 Hugo te rappelle pour ton estimation gratuite
           </div>
         </div>
       </div>
@@ -298,7 +298,7 @@ function ContactForm({ answers, onSubmit }) {
       <form onSubmit={e => { e.preventDefault(); submit(); }} autoComplete="on" noValidate>
         <div style={{ marginBottom: 14 }}>
           <label style={{ display: "block", fontSize: 12, color: "#888", marginBottom: 5, fontWeight: 700 }}>PRÉNOM <span style={{ color: RED }}>*</span></label>
-          <input ref={refs.prenom} type="text" placeholder="Marie" autoComplete="given-name" autoCapitalize="words" style={inputStyle("prenom")} onFocus={e => e.target.style.borderColor = RED} onBlur={e => e.target.style.borderColor = errors.prenom ? RED : BORDER} />
+          <input ref={refs.prenom} type="text" placeholder="Moana" autoComplete="given-name" autoCapitalize="words" style={inputStyle("prenom")} onFocus={e => e.target.style.borderColor = RED} onBlur={e => e.target.style.borderColor = errors.prenom ? RED : BORDER} />
           {errors.prenom && <div style={{ fontSize: 11, color: RED, marginTop: 3 }}>⚠ {errors.prenom}</div>}
         </div>
         <div style={{ marginBottom: 14 }}>
@@ -319,7 +319,7 @@ function ContactForm({ answers, onSubmit }) {
         }}>
           {loading
             ? <><span style={{ display: "inline-block", animation: "spin 0.7s linear infinite" }}>⟳</span> Calcul en cours…</>
-            : "Découvrir l'estimation complète →"}
+            : "Hugo me rappelle →"}
         </button>
       </form>
 
