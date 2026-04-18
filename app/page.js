@@ -435,8 +435,18 @@ function ResultPreview({ answers, onSubmit }) {
         <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", marginBottom: 4, textAlign: "center" }}>
           Tu veux l'estimation exacte ?
         </div>
-        <div style={{ fontSize: 13, color: "#888", marginBottom: 16, textAlign: "center" }}>
+        <div style={{ fontSize: 13, color: "#888", marginBottom: 12, textAlign: "center" }}>
           Hugo se déplace gratuitement pour évaluer ton bien
+        </div>
+
+        {/* Promesse visible */}
+        <div style={{ background: "#0A1A0A", border: "1px solid #22C55E44", borderLeft: "4px solid #22C55E", borderRadius: 10, padding: "12px 14px", marginBottom: 16 }}>
+          <div style={{ fontSize: 13, color: "#22C55E", fontWeight: 700, marginBottom: 4 }}>
+            ✅ Tu reçois immédiatement
+          </div>
+          <div style={{ fontSize: 12, color: "#aaa", lineHeight: 1.7 }}>
+            L'analyse complète de ton dossier — points forts, risques détectés et conseils concrets avant la mise en vente.
+          </div>
         </div>
 
         {/* Rappel */}
@@ -483,9 +493,6 @@ function ResultPreview({ answers, onSubmit }) {
             ? <><span style={{ display: "inline-block", animation: "spin 0.7s linear infinite" }}>⟳</span> Envoi…</>
             : "Hugo me rappelle →"}
         </button>
-        <div style={{ textAlign: "center", fontSize: 12, color: "#666", marginTop: 10, lineHeight: 1.6 }}>
-          ✅ Après confirmation, tu reçois l'analyse complète de ton dossier — points forts, risques détectés et conseils avant la mise en vente.
-        </div>
       </div>
 
       <div style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap" }}>
@@ -590,9 +597,9 @@ function ResultPage({ result, answers, contact }) {
         </div>
       )}
 
-      {/* Ce que comprend l'audit */}
+      {/* Ce que comprend la visite */}
       <div style={{ background: DARK, borderRadius: 12, padding: "16px 18px", marginBottom: 18, border: `1px solid ${BORDER}` }}>
-        <div style={{ fontSize: 11, color: "#555", letterSpacing: 2, marginBottom: 12 }}>TON AUDIT GRATUIT COMPREND</div>
+        <div style={{ fontSize: 11, color: "#555", letterSpacing: 2, marginBottom: 12 }}>LA VISITE GRATUITE COMPREND</div>
         {[
           "Vérification PV d'AG des 3 dernières années",
           "Contrôle des charges & appels trimestriels",
@@ -613,8 +620,8 @@ function ResultPage({ result, answers, contact }) {
         borderRadius: 14, padding: "20px 24px", textAlign: "center", marginBottom: 14,
         boxShadow: "0 4px 24px rgba(37,211,102,0.4)",
       }}>
-        <div style={{ fontSize: 18, fontWeight: 800 }}>💬 Réserver mon audit gratuit →</div>
-        <div style={{ fontSize: 12, opacity: 0.85, marginTop: 4 }}>Sans engagement · Gratuit · Hugo te contacte</div>
+        <div style={{ fontSize: 18, fontWeight: 800 }}>💬 Je veux l'estimation exacte →</div>
+        <div style={{ fontSize: 12, opacity: 0.85, marginTop: 4 }}>Hugo se déplace gratuitement · Sans engagement</div>
       </a>
 
       {/* Garanties */}
