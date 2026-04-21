@@ -509,6 +509,142 @@ function ResultPreview({ answers, onSubmit }) {
 }
 
 
+// ── Rapport gratuit complet — pas de formulaire ──────────────────────────────
+function ResultFree({ result, answers }) {
+  const [show, setShow] = useState(false);
+  const [count, setCount] = useState(0);
+  useEffect(() => { setTimeout(() => setShow(true), 40); }, []);
+  useEffect(() => {
+    let n = 0; const target = result.score || 80;
+    const iv = setInterval(() => { n += 2; if (n >= target) { setCount(target); clearInterval(iv); } else setCount(n); }, 22);
+    return () => clearInterval(iv);
+  }, []);
+
+  const fourchette = getPrixFourchette(answers.commune, answers.surface);
+  const scoreColor = count >= 80 ? "#22C55E" : count >= 60 ? "#F59E0B" : RED;
+  const SLABELS = { moins50: "studio / T2", "50_80": "T2 / T3", "80_120": "T3 / T4", plus120: "appartement prestige" };
+  const surface = SLABELS[answers.surface] || "appartement";
+  const waMsg = encodeURIComponent(`Bonjour Hugo, j'ai un ${surface} à ${answers.commune} et je voudrais une estimation gratuite.`);
+  const waLink = `https://wa.me/${WA_NUMBER}?text=${waMsg}`;
+
+  return (
+    <div style={{ opacity: show ? 1 : 0, transform: show ? "translateY(0)" : "translateY(16px)", transition: "all 0.5s" }}>
+
+      {/* Score */}
+      <div style={{ background: "linear-gradient(135deg,#1A1A1A,#0D0D0D)", borderRadius: 16, padding: "22px 20px", marginBottom: 14, border: "1px solid #2A2A2A", textAlign: "center", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, opacity: 0.04, backgroundImage: `radial-gradient(circle,${RED} 1px,transparent 1px)`, backgroundSize: "18px 18px" }} />
+        <div style={{ position: "relative" }}>
+          <div style={{ fontSize: 10, letterSpacing: 3, color: "#555", marginBottom: 6 }}>RAPPORT EXCLUSIF · KW POLYNÉSIE</div>
+          <div style={{ fontSize: 64, fontWeight: 900, lineHeight: 1, color: scoreColor, marginBottom: 4 }}>
+            {count}<span style={{ fontSize: 28 }}>/100</span>
+          </div>
+          <div style={{ fontSize: 12, color: scoreColor, fontWeight: 700, marginBottom: 10 }}>
+            {count >= 80 ? "✅ Dossier solide" : count >= 60 ? "⚠️ Quelques points à régler" : "🔴 Points bloquants détectés"}
+          </div>
+          <div style={{ background: `${RED}15`, border: `1px solid ${RED}33`, borderRadius: 10, padding: "12px 16px" }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", lineHeight: 1.4 }}>{result.titre}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Fourchette */}
+      <div style={{ background: DARK, borderRadius: 12, padding: "16px", marginBottom: 14, border: `1px solid ${BORDER}`, textAlign: "center" }}>
+        <div style={{ fontSize: 11, color: "#666", letterSpacing: 2, marginBottom: 8 }}>ESTIMATION INDICATIVE</div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 10 }}>
+          <div style={{ width: 32, height: 32, borderRadius: "50%", overflow: "hidden", border: `2px solid ${RED}` }}>
+            <img src="/hugo.png" alt="Hugo" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
+          </div>
+          <div style={{ fontSize: 11, color: "#666" }}>Hugo Vidus · KW Polynésie</div>
+        </div>
+        <div style={{ fontSize: 13, color: "#888", marginBottom: 4 }}>
+          {fourchette.label} à <strong style={{ color: "#fff" }}>{answers.commune}</strong>
+        </div>
+        <div style={{ fontSize: 24, fontWeight: 900, color: RED }}>{fourchette.min}</div>
+        <div style={{ fontSize: 12, color: "#555", margin: "2px 0" }}>—</div>
+        <div style={{ fontSize: 24, fontWeight: 900, color: "#fff", marginBottom: 8 }}>{fourchette.max}</div>
+        <div style={{ fontSize: 11, color: "#555", fontStyle: "italic" }}>📊 Fourchette indicative · Seule la visite donne le prix exact</div>
+      </div>
+
+      {/* Hugo message */}
+      <div style={{ display: "flex", gap: 14, alignItems: "flex-start", background: DARK, border: `1px solid ${BORDER}`, borderRadius: 14, padding: "16px", marginBottom: 12 }}>
+        <img src="/hugo.png" alt="Hugo" style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover", objectPosition: "top", border: `2px solid ${RED}`, flexShrink: 0 }} />
+        <div>
+          <div style={{ fontSize: 12, color: RED, fontWeight: 700, marginBottom: 4 }}>HUGO VIDUS · KW POLYNÉSIE</div>
+          <div style={{ fontSize: 14, color: "#ddd", lineHeight: 1.6, fontStyle: "italic" }}>"{result.message_hugo || result.accroche}"</div>
+        </div>
+      </div>
+
+      {/* Diagnostic */}
+      {result.diagnostic && (
+        <div style={{ background: "#111", borderRadius: 12, padding: "16px", marginBottom: 12, border: `1px solid ${BORDER}` }}>
+          <div style={{ fontSize: 11, color: "#555", letterSpacing: 2, marginBottom: 8 }}>📋 DIAGNOSTIC DOSSIER</div>
+          <div style={{ fontSize: 14, color: "#ccc", lineHeight: 1.7 }}>{result.diagnostic}</div>
+        </div>
+      )}
+
+      {/* Risque */}
+      {result.risque_principal && (
+        <div style={{ background: "#1A0A0A", borderLeft: `4px solid ${RED}`, borderRadius: "0 10px 10px 0", border: `1px solid ${RED}33`, padding: "14px 16px", marginBottom: 12, fontSize: 14, color: "#ccc", lineHeight: 1.6 }}>
+          ⚠️ <strong style={{ color: RED }}>Point critique — </strong>{result.risque_principal}
+        </div>
+      )}
+
+      {/* Marché */}
+      {result.marche_local && (
+        <div style={{ background: "#0A0A1A", border: "1px solid #1A1A3A", borderRadius: 10, padding: "14px 16px", marginBottom: 12, fontSize: 14, color: "#aaa", lineHeight: 1.6 }}>
+          📊 <strong style={{ color: "#6B8AFF" }}>Ton marché — </strong>{result.marche_local}
+        </div>
+      )}
+
+      {/* Atouts */}
+      {result.avantage_concurrentiel && (
+        <div style={{ background: "#0A160A", border: "1px solid #1A3A1A", borderRadius: 10, padding: "14px 16px", marginBottom: 12, fontSize: 14, color: "#bbb", lineHeight: 1.6 }}>
+          💪 <strong style={{ color: "#22C55E" }}>Tes atouts — </strong>{result.avantage_concurrentiel}
+        </div>
+      )}
+
+      {/* Plan d'action */}
+      {result.plan_action && result.plan_action.length > 0 && (
+        <div style={{ background: DARK, borderRadius: 12, padding: "16px 18px", marginBottom: 16, border: `1px solid ${BORDER}` }}>
+          <div style={{ fontSize: 11, color: "#555", letterSpacing: 2, marginBottom: 12 }}>✅ TON PLAN D'ACTION</div>
+          {result.plan_action.map((action, i) => (
+            <div key={i} style={{ display: "flex", gap: 12, marginBottom: 10, fontSize: 14, color: "#ccc", lineHeight: 1.5 }}>
+              <span style={{ background: RED, color: "#fff", borderRadius: "50%", width: 22, height: 22, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, flexShrink: 0 }}>{i + 1}</span>
+              <span>{action}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Mention visite */}
+      <div style={{ background: "#0A0A0A", border: `1px solid ${BORDER}`, borderRadius: 10, padding: "12px 16px", marginBottom: 14, fontSize: 13, color: "#666", lineHeight: 1.6, textAlign: "center" }}>
+        ℹ️ Rapport basé sur tes réponses et les données du marché.<br/>
+        <strong style={{ color: "#888" }}>Seule la visite gratuite avec Hugo donne le prix exact</strong> selon l'état réel, l'étage et les spécificités de ton bien.
+      </div>
+
+      {/* CTA WhatsApp */}
+      <a href={waLink} target="_blank" rel="noreferrer" style={{
+        display: "block", background: "#25D366", color: "#fff", textDecoration: "none",
+        borderRadius: 14, padding: "20px 24px", textAlign: "center", marginBottom: 14,
+        boxShadow: "0 4px 24px rgba(37,211,102,0.4)",
+      }}>
+        <div style={{ fontSize: 18, fontWeight: 800 }}>💬 Je veux l'estimation exacte →</div>
+        <div style={{ fontSize: 12, opacity: 0.85, marginTop: 4 }}>Hugo se déplace gratuitement · Sans engagement</div>
+      </a>
+
+      <div style={{ display: "flex", justifyContent: "center", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
+        {["🔒 Confidentiel", "🎯 Estimation gratuite", "💯 Sans engagement"].map(t => (
+          <div key={t} style={{ fontSize: 11, color: "#555", background: "#111", borderRadius: 20, padding: "4px 12px", border: "1px solid #1E1E1E" }}>{t}</div>
+        ))}
+      </div>
+
+      <div style={{ background: "#0F0F0F", borderRadius: 10, padding: "10px 14px", border: "1px solid #1A1A1A", fontSize: 11, color: "#444", textAlign: "center" }}>
+        <span style={{ color: RED, fontWeight: 700 }}>Hugo Vidus</span> · Keller Williams Polynésie · RSAC F82558 · +689 87 79 93 85
+      </div>
+    </div>
+  );
+}
+
 function Loading({ prenom }) {
   const msgs = ["Analyse du dossier en cours…", "Vérification des risques copropriété…", "Calcul de la valeur du marché…", "Préparation de ton résultat…"];
   const [i, setI] = useState(0);
@@ -697,26 +833,42 @@ export default function Page() {
       return;
     }
     if (stepIdx < STEPS.length - 1) setStepIdx(stepIdx + 1);
-    else setPhase("result_preview"); // ← résultat immédiat sans attente
+    else {
+      // Rapport complet immédiat — pas de formulaire avant
+      setPhase("loading");
+      loadResult(a);
+    }
   };
 
-  const onContact = async (data) => {
-    setContact(data);
-    setPhase("loading");
-    track("contact_submit");
+  const loadResult = async (answersData) => {
+    track("result_view");
     try {
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ answers, contact: data }),
+        body: JSON.stringify({ answers: answersData, contact: { prenom: "ami", nom: "", tel: "", email: "", rappel: "" } }),
       });
       const json = await res.json();
       if (json.error) throw new Error();
       setResult(json);
-      setPhase("result");
+      setAnswers(answersData);
+      setPhase("result_free"); // rapport gratuit sans coordonnées
     } catch {
       setPhase("error");
     }
+  };
+
+  const onContact = async (data) => {
+    setContact(data);
+    track("contact_submit");
+    // Enregistre les coordonnées dans Google Sheets
+    try {
+      await fetch(process.env.NEXT_PUBLIC_GOOGLE_SHEET_URL || "/api/track", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ event: "contact_after_result", data: { ...data, ...answers } }),
+      });
+    } catch(e) {}
   };
 
   const isQuiz = phase === "quiz";
@@ -730,7 +882,7 @@ export default function Page() {
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{ fontSize: 20, fontWeight: 900, color: RED, letterSpacing: -0.5, lineHeight: 1 }}>kw</div>
           <div style={{ width: 1, height: 20, background: "#222" }} />
-          <div style={{ fontSize: 11, color: "#888", letterSpacing: 1, lineHeight: 1 }}>ESTIMATION APPARTEMENT</div>
+          <div style={{ fontSize: 11, color: "#888", letterSpacing: 1, lineHeight: 1 }}>CHECKLIST DOSSIER VENTE</div>
         </div>
         {(isQuiz || isContact) && (
           <div style={{ fontSize: 11, color: RED, fontWeight: 700 }}>
@@ -745,7 +897,7 @@ export default function Page() {
         {/* Trust bar quiz/contact */}
         {(isQuiz || isContact) && (
           <div style={{ display: "flex", justifyContent: "center", gap: 10, marginBottom: 20, flexWrap: "wrap" }}>
-            {["⏱ 45 secondes", "🔒 Confidentiel", "💯 Gratuit"].map(t => (
+            {["⏱ 45 secondes", "📋 Rapport complet", "💯 Gratuit"].map(t => (
               <div key={t} style={{ fontSize: 11, color: "#555", background: "#111", borderRadius: 20, padding: "4px 12px", border: "1px solid #1A1A1A" }}>{t}</div>
             ))}
           </div>
@@ -757,6 +909,10 @@ export default function Page() {
 
         {phase === "result_preview" && (
           <ResultPreview answers={answers} onSubmit={onContact} />
+        )}
+
+        {phase === "result_free" && result && (
+          <ResultFree result={result} answers={answers} />
         )}
 
         {phase === "contact" && (
