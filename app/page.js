@@ -319,7 +319,7 @@ function ContactForm({ answers, onSubmit }) {
         }}>
           {loading
             ? <><span style={{ display: "inline-block", animation: "spin 0.7s linear infinite" }}>⟳</span> Calcul en cours…</>
-            : "Hugo te rappelle →"}
+            : "Je laisse mon numéro →"}
         </button>
       </form>
 
@@ -581,7 +581,7 @@ function CallbackForm({ answers }) {
         padding: "14px", fontSize: 15, fontWeight: 700,
         cursor: loading ? "not-allowed" : "pointer",
       }}>
-        {loading ? "Envoi…" : "Hugo te rappelle →"}
+        {loading ? "Envoi…" : "Je laisse mon numéro →"}
       </button>
     </div>
   );
