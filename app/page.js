@@ -319,7 +319,7 @@ function ContactForm({ answers, onSubmit }) {
         }}>
           {loading
             ? <><span style={{ display: "inline-block", animation: "spin 0.7s linear infinite" }}>⟳</span> Calcul en cours…</>
-            : "Hugo me rappelle →"}
+            : "Hugo te rappelle →"}
         </button>
       </form>
 
@@ -509,6 +509,84 @@ function ResultPreview({ answers, onSubmit }) {
 }
 
 
+// ── Formulaire rappel optionnel ───────────────────────────────────────────────
+function CallbackForm({ answers }) {
+  const prenomRef = useRef();
+  const telRef = useRef();
+  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  const inputStyle = (k) => ({
+    width: "100%", padding: "14px", borderRadius: 12, fontSize: 15,
+    background: errors[k] ? "#1A0A0A" : "#0A0A0A",
+    border: `2px solid ${errors[k] ? RED : "#222"}`,
+    color: "#fff", outline: "none", boxSizing: "border-box",
+    WebkitAppearance: "none",
+  });
+
+  const submit = async () => {
+    const prenom = prenomRef.current?.value.trim();
+    const tel = telRef.current?.value.trim();
+    const e = {};
+    if (!prenom) e.prenom = "Requis";
+    if ((tel || "").replace(/\D/g, "").length < 6) e.tel = "Numéro invalide";
+    if (Object.keys(e).length) { setErrors(e); return; }
+    setLoading(true);
+    try {
+      await fetch(process.env.NEXT_PUBLIC_GOOGLE_SHEET_URL || "/api/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          answers,
+          contact: { prenom, tel, nom: "", email: "", rappel: "callback_form" }
+        }),
+      });
+    } catch(e) {}
+    setLoading(false);
+    setSent(true);
+  };
+
+  if (sent) return (
+    <div style={{ background: "#0A160A", border: "1px solid #1A3A1A", borderRadius: 12, padding: "16px", marginBottom: 14, textAlign: "center" }}>
+      <div style={{ fontSize: 20, marginBottom: 8 }}>✅</div>
+      <div style={{ fontSize: 14, color: "#22C55E", fontWeight: 700 }}>Hugo te contacte très prochainement !</div>
+    </div>
+  );
+
+  return (
+    <div style={{ background: "#0D0D0D", border: `1px solid #222`, borderRadius: 12, padding: "16px", marginBottom: 14 }}>
+      <div style={{ fontSize: 13, color: "#666", textAlign: "center", marginBottom: 12 }}>
+        ou
+      </div>
+      <div style={{ fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 4, textAlign: "center" }}>
+        Tu préfères être rappelé ?
+      </div>
+      <div style={{ fontSize: 12, color: "#666", marginBottom: 14, textAlign: "center" }}>
+        Laisse ton numéro — Hugo te contacte
+      </div>
+      <div style={{ marginBottom: 10 }}>
+        <input ref={prenomRef} type="text" placeholder="Moana" autoComplete="given-name"
+          style={inputStyle("prenom")} />
+        {errors.prenom && <div style={{ fontSize: 11, color: RED, marginTop: 3 }}>⚠ {errors.prenom}</div>}
+      </div>
+      <div style={{ marginBottom: 12 }}>
+        <input ref={telRef} type="tel" placeholder="87 XX XX XX" autoComplete="tel" inputMode="tel"
+          style={inputStyle("tel")} />
+        {errors.tel && <div style={{ fontSize: 11, color: RED, marginTop: 3 }}>⚠ {errors.tel}</div>}
+      </div>
+      <button onClick={submit} disabled={loading} style={{
+        width: "100%", background: loading ? "#333" : "#1A1A1A",
+        color: "#fff", border: `1px solid ${RED}44`, borderRadius: 12,
+        padding: "14px", fontSize: 15, fontWeight: 700,
+        cursor: loading ? "not-allowed" : "pointer",
+      }}>
+        {loading ? "Envoi…" : "Hugo te rappelle →"}
+      </button>
+    </div>
+  );
+}
+
 // ── Rapport gratuit complet — pas de formulaire ──────────────────────────────
 function ResultFree({ result, answers }) {
   const [show, setShow] = useState(false);
@@ -631,6 +709,9 @@ function ResultFree({ result, answers }) {
         <div style={{ fontSize: 18, fontWeight: 800 }}>💬 Je veux l'estimation exacte →</div>
         <div style={{ fontSize: 12, opacity: 0.85, marginTop: 4 }}>Hugo se déplace gratuitement · Sans engagement</div>
       </a>
+
+      {/* Formulaire optionnel rappel */}
+      <CallbackForm answers={answers} />
 
       <div style={{ display: "flex", justifyContent: "center", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
         {["🔒 Confidentiel", "🎯 Estimation gratuite", "💯 Sans engagement"].map(t => (
