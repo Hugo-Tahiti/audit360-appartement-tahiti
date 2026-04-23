@@ -12,10 +12,28 @@ function doGet(e) {
       const leadsSheet = ss.getSheetByName("Leads") || ss.getSheets()[0];
       const leadsData = leadsSheet.getDataRange().getValues();
       const leadsHeaders = leadsData[0];
+      // Mapping exact des colonnes du Sheet vers les clés du dashboard
+      const HEADER_MAP = {
+        "date":      "date",
+        "prénom":    "prenom",
+        "prenom":    "prenom",
+        "nom":       "nom",
+        "téléphone": "tel",
+        "telephone": "tel",
+        "email":     "email",
+        "commune":   "commune",
+        "surface":   "surface",
+        "projet":    "projet",
+        "problème":  "probleme",
+        "probleme":  "probleme",
+        "score":     "score",
+      };
+
       const leads = leadsData.slice(1).map(row => {
         const obj = {};
         leadsHeaders.forEach((h, i) => {
-          obj[String(h).toLowerCase().replace(/é/g, 'e').replace(/è/g, 'e').replace(/ê/g, 'e').replace(/\s/g, '_')] = row[i];
+          const key = HEADER_MAP[String(h).toLowerCase().trim()] || String(h).toLowerCase().trim();
+          obj[key] = row[i];
         });
         return obj;
       }).filter(l => l.prenom || l.nom);
@@ -74,6 +92,12 @@ function doPost(e) {
 
     // Lead normal
     const leadsSheet = ss.getSheetByName("Leads") || ss.getSheets()[0];
+    
+    // Déterminer la source du lead
+    const source = data.rappel === 'callback_form' ? 'Formulaire rappel' :
+                   data.rappel === 'result_view' ? 'Rapport vu' :
+                   data.rappel || 'Quiz complet';
+    
     leadsSheet.appendRow([
       new Date().toLocaleString('fr-FR'),
       data.prenom || '',
@@ -85,14 +109,43 @@ function doPost(e) {
       data.projet || '',
       data.probleme || '',
       data.score || '',
+      source,
     ]);
     console.log("Sheet OK");
+
+    // Sujet email selon la source
+    const isCallbackForm = data.rappel === 'callback_form';
+    const isResultView = data.rappel === 'result_view';
+    
+    const sujet = isCallbackForm
+      ? '🔥 Rappel demandé - ' + (data.prenom || '?') + ' - ' + (data.commune || '?') + ' - ' + (data.projet || '?')
+      : isResultView
+      ? '👁 Rapport vu - ' + (data.commune || '?') + ' - ' + (data.surface || '?') + ' - ' + (data.projet || '?')
+      : '📋 Nouveau lead - ' + (data.prenom || '?') + ' - ' + (data.commune || '?');
+
+    const urgence = isCallbackForm
+      ? '⚡ A RAPPELER EN PRIORITÉ'
+      : isResultView
+      ? '👁 A surveiller — rapport consulté sans laisser de coordonnées'
+      : '📋 Lead à contacter';
 
     // Email notification Hugo
     GmailApp.sendEmail(
       'hugo@kwpolynesie.com',
-      'Nouveau lead - ' + data.prenom + ' ' + data.nom + ' - ' + data.commune,
-      'Nouveau lead reçu :\n\nPrénom : ' + data.prenom + '\nNom : ' + data.nom + '\nTél : ' + data.tel + '\nEmail : ' + data.email + '\nCommune : ' + data.commune + '\nSurface : ' + data.surface + '\nProjet : ' + data.projet + '\nProblème : ' + data.probleme + '\nScore : ' + data.score + '\n\nA contacter rapidement.',
+      sujet,
+      urgence + '\n\n' +
+      'Source : ' + source + '\n' +
+      'Prénom : ' + (data.prenom || '-') + '\n' +
+      'Tél : ' + (data.tel || '-') + '\n' +
+      'Email : ' + (data.email || '-') + '\n' +
+      'Commune : ' + (data.commune || '-') + '\n' +
+      'Surface : ' + (data.surface || '-') + '\n' +
+      'Projet : ' + (data.projet || '-') + '\n' +
+      'Problème : ' + (data.probleme || '-') + '\n' +
+      'Score : ' + (data.score || '-') + '\n\n' +
+      (isCallbackForm ? 'Ce prospect a demandé à être rappelé — contacte-le rapidement.' :
+       isResultView ? 'Ce prospect a consulté son rapport complet sans laisser ses coordonnées.' :
+       'Lead à contacter.'),
       { replyTo: 'hugo@kwpolynesie.com' }
     );
     console.log("Email Hugo OK");
