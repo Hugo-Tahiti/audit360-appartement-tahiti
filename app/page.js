@@ -90,7 +90,7 @@ function WelcomePage({ onStart }) {
         </div>
         <div style={{ fontSize: 11, color: "#666", letterSpacing: 2, marginBottom: 8 }}>HUGO VIDUS · KW POLYNÉSIE</div>
         <div style={{ fontSize: 22, fontWeight: 900, color: "#fff", lineHeight: 1.3, marginBottom: 8 }}>
-          Tu as un appartement à Tahiti<br/>et tu penses vendre ?
+          Tu as un appartement à Tahiti<br/>et tu penses à vendre ?
         </div>
         <div style={{ fontSize: 15, color: "#888", lineHeight: 1.6 }}>
           Avant d'aller chez le notaire —<br/>
