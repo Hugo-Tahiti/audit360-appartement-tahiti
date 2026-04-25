@@ -31,6 +31,11 @@ export async function POST(req) {
 
   const marcheInfo = MARCHE[answers.commune] || "marché local actif, conditions à vérifier selon le quartier précis";
 
+  // Prénom propre — on ignore les placeholders techniques
+  const prenomBrut = contact.prenom || "";
+  const placeholders = ["ami", "toi", "non renseigné", "moana", "test", ""];
+  const prenomPropre = placeholders.includes(prenomBrut.toLowerCase()) ? null : prenomBrut;
+
   const system = `Tu es Hugo Vidus, conseiller immobilier chez Keller Williams Polynésie. Tu rédiges un rapport personnalisé et exclusif pour un propriétaire d'appartement à Tahiti qui vient de faire son bilan dossier en ligne.
 
 TON STYLE : Direct, professionnel, chaleureux. Tu tutoies. Phrases courtes et percutantes. Tu donnes des informations concrètes que les agences classiques ne donnent pas. Ton rapport doit faire la différence — le propriétaire doit se dire "je n'ai jamais reçu ça d'une agence".
@@ -42,6 +47,7 @@ RÈGLES ABSOLUES :
 - Tu ne mentionnes JAMAIS la DAACT ni les diagnostics (DPE, amiante, électricité, plomb) — NON REQUIS en Polynésie française
 - Tu ne parles JAMAIS d'état daté
 - Chaque section doit être SPÉCIFIQUE à la situation du propriétaire — pas de généralités
+- Si le prénom fourni est absent ou générique, NE PAS utiliser de prénom dans le rapport. Adresse-toi directement sans prénom (ex: "Ton dossier..." plutôt que "Marie, ton dossier...")
 
 DOCUMENTS OBLIGATOIRES VENTE APPARTEMENT PF :
 1. Titre de propriété complet (chaîne de propriété DAF)
@@ -49,7 +55,7 @@ DOCUMENTS OBLIGATOIRES VENTE APPARTEMENT PF :
 3. Pièces d'identité de tous les propriétaires
 4. Règlement de copropriété et ses modificatifs
 5. 3 derniers PV d'Assemblée Générale
-6. 3 derniers appels trimestriels de charges
+6. 3 derniers appels trimestriels de charges OU dernier état de répartition des charges annuelles
 7. Carnet d'entretien de l'immeuble
 8. Plans si disponibles
 
@@ -62,16 +68,16 @@ RISQUES BLOQUANTS :
 RÉPONDS UNIQUEMENT EN JSON avec ces champs exacts :
 {
   "score": <entier entre 45 et 92 selon gravité du problème : aucun=85-92, reglement=68-75, ag=58-68, charges=45-58>,
-  "titre": "<phrase accrocheuse max 10 mots, prénom + commune + situation>",
+  "titre": "<phrase accrocheuse max 10 mots, sans prénom si non fourni, commune + situation>",
   "diagnostic": "<2-3 phrases : état réel du dossier, ce qui va et ce qui ne va pas, SPÉCIFIQUE au problème déclaré>",
   "risque_principal": "<si problème détecté : conséquence concrète et chiffrée si possible. Si aucun problème : point de vigilance à anticiper quand même>",
   "marche_local": "<2 phrases sur le marché de SA commune spécifiquement : demande, profil acheteurs, timing>",
   "plan_action": ["<action 1 concrète à faire cette semaine>", "<action 2 concrète>", "<action 3 concrète>"],
   "avantage_concurrentiel": "<ce que son appartement a pour lui dans ce marché : surface, localisation, timing>",
-  "message_hugo": "<message personnel d'Hugo, 2 phrases max, direct et humain, donne envie du RDV>"
+  "message_hugo": "<message personnel d'Hugo, 2 phrases max, direct et humain, donne envie du RDV, sans prénom si non fourni>"
 }`;
 
-  const user = `Prénom : ${contact.prenom}
+  const user = `Prénom : ${prenomPropre || "non renseigné"}
 Commune : ${answers.commune}
 Surface : ${SURFACE[answers.surface] || answers.surface}
 Projet : ${PROJET[answers.projet] || answers.projet}
@@ -105,7 +111,7 @@ Génère un rapport personnalisé exclusif. JSON uniquement, pas de markdown.`;
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        prenom:   contact.prenom,
+        prenom:   prenomPropre || "",
         nom:      contact.nom,
         tel:      contact.tel,
         email:    contact.email,
@@ -121,13 +127,10 @@ Génère un rapport personnalisé exclusif. JSON uniquement, pas de markdown.`;
     console.error("Google Sheets error:", e);
   }
 
-  // Log lead to console (visible in Vercel logs)
   console.log("NOUVEAU LEAD", {
     date: new Date().toISOString(),
-    prenom: contact.prenom,
-    nom: contact.nom,
+    prenom: prenomPropre || "(anonyme)",
     tel: contact.tel,
-    email: contact.email,
     commune: answers.commune,
     surface: answers.surface,
     projet: answers.projet,
