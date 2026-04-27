@@ -40,7 +40,7 @@ const STEPS = [
     question: "Tu es propriétaire de cet appartement ?",
     emoji: "🏠",
     options: [
-      { value: "oui",     label: "Oui, je suis propriétaire", sub: "Et je pense à vendre", icon: "✅", hot: true },
+      { value: "oui",     label: "Oui, je suis propriétaire", sub: "Et je pense vendre", icon: "✅", hot: true },
       { value: "achat",   label: "Non, je cherche à acheter",  sub: "Je suis acquéreur",   icon: "🔍" },
       { value: "curieux", label: "Je me renseigne juste",      sub: "Pas de projet précis", icon: "💭" },
     ],
@@ -90,7 +90,7 @@ function WelcomePage({ onStart }) {
         </div>
         <div style={{ fontSize: 11, color: "#666", letterSpacing: 2, marginBottom: 8 }}>HUGO VIDUS · KW POLYNÉSIE</div>
         <div style={{ fontSize: 22, fontWeight: 900, color: "#fff", lineHeight: 1.3, marginBottom: 8 }}>
-          Tu as un appartement à Tahiti<br/>et tu penses à vendre ?
+          Tu as un appartement à Tahiti<br/>et tu penses vendre ?
         </div>
         <div style={{ fontSize: 15, color: "#888", lineHeight: 1.6 }}>
           Avant d'aller chez le notaire —<br/>
